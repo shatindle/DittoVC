@@ -1,0 +1,34 @@
+{
+  "name": "dittovc",
+  "version": "1.0.0",
+  "description": "A simpler way to manage Discord voice chats",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shatindle/DittoVC.git"
+  },
+  "keywords": [
+    "discordjs",
+    "discord",
+    "voicechat",
+    "moderator"
+  ],
+  "author": "sha.tindle@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shatindle/DittoVC/issues"
+  },
+  "homepage": "https://github.com/shatindle/DittoVC#readme",
+  "dependencies": {
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "@discordjs/voice": "^0.8.0",
+    "@google-cloud/firestore": "^5.0.2",
+    "discord-api-types": "^0.26.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0"
+  }
+}
