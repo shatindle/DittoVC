@@ -29,19 +29,21 @@ const CHANNELS_COLLECTION = "channels";
  * @param {String} id The channel ID
  * @param {String} guildId The server ID the channel is associated with (does not change, used to mass delete)
  */
-async function registerChannel(id, guildId, prefix) {
+async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "") {
     var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
     await ref.set({
         id,
         guildId,
         prefix,
+        instructionsId,
         createdOn: Firestore.Timestamp.now()
     });
 
     addToCache({
         id,
         guildId,
-        prefix
+        prefix,
+        instructionsId
     }, channels);
 }
 
@@ -133,6 +135,25 @@ async function getChannelPrefix(id) {
     return "Voice Chat {count}";
 }
 
+async function getChannelInstructionsDestination(id) {
+    let channel = checkCache(id, "id", channels);
+
+    if (channel)
+        return channel.instructionsId;
+
+    var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
+    var doc = await ref.get();
+
+    if (doc.exists) {
+        var data = doc.data();
+
+        if (data)
+            return data.instructionsId;
+    }
+
+    return undefined;
+}
+
 const clones = [];
 const CLONES_COLLECTION = "clones";
 
@@ -161,6 +182,7 @@ const CLONES_COLLECTION = "clones";
  * @param {String} owner The current owner user ID
  */
 async function cloneChannel(oldChannel, newChannel, guildId, owner) {
+    const instructionsId = await getChannelInstructionsDestination(oldChannel);
     const prefix = await unregisterChannel(oldChannel);
 
     var ref = await db.collection(CLONES_COLLECTION).doc(oldChannel);
@@ -179,7 +201,7 @@ async function cloneChannel(oldChannel, newChannel, guildId, owner) {
         cloneOf: newChannel
     }, clones);
 
-    await registerChannel(newChannel, guildId, prefix);
+    await registerChannel(newChannel, guildId, prefix, instructionsId);
 }
 
 /**
@@ -226,6 +248,7 @@ module.exports = {
     cloneChannel,
     isChannelClonable,
     getChannelPrefix,
+    getChannelInstructionsDestination,
 
     cloneChannel,
     deleteClone,

@@ -14,6 +14,6 @@ module.exports = {
 
         await unregisterChannel(id);
 
-        await interaction.reply({ content: 'un-registered <#' + id + '> for cloning', ephemeral: true });
+        await interaction.reply({ content: 'un-registered <#' + id + '> for cloning', ephemeral: false });
 	},
 };

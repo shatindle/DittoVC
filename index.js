@@ -1,12 +1,13 @@
 const fs = require('fs');
-const { Client, Collection, Intents } = require('discord.js');
+const { Client, Collection, Intents, Permissions } = require('discord.js');
 const { token } = require('./config.json');
-const { cloneChannel, isChannelClonable, getChannelPrefix, getClone, deleteClone } = require("./dal/databaseApi");
+const { cloneChannel, isChannelClonable, getChannelPrefix, getChannelInstructionsDestination, getClone, deleteClone } = require("./dal/databaseApi");
 
 const client = new Client({ 
     intents: [
         Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_VOICE_STATES
+        Intents.FLAGS.GUILD_VOICE_STATES, 
+        Intents.FLAGS.GUILD_MESSAGES
     ] });
 
 client.commands = new Collection();
@@ -31,12 +32,42 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
     const { channelId: leftChannelId, guild } = oldState;
     const { channelId: joinedChannelId, id: userId } = newState;
+    
+    if (leftChannelId) {
+        // the user left a channel
+        const currentChannel = client.channels.cache.get(leftChannelId);
+        const memberCount = currentChannel.members.size;
+
+        if (memberCount === 0) {
+            if (await getClone(leftChannelId)){
+                await currentChannel.delete();
+                await deleteClone(leftChannelId);
+            }
+        }
+    }
 
     if (joinedChannelId) {
         // the user joined a channel
         if (await isChannelClonable(joinedChannelId)) {
             let prefix = await getChannelPrefix(joinedChannelId);
-            const clone = await client.channels.cache.get(joinedChannelId).clone(undefined, true, false, "Clone");
+            let instructionsId = await getChannelInstructionsDestination(joinedChannelId);
+            const claim = client.channels.cache.get(joinedChannelId);
+            const clone = await claim.clone(undefined, true, false, "Clone");
+            await claim
+            .permissionOverwrites.set([
+                {
+                    id: client.user.id,
+                    allow: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
+                },
+                {
+                    id: userId,
+                    allow: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
+                },
+                {
+                    id: claim.guild.roles.everyone,
+                    deny: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
+                }
+            ]);
             // determine what we should call this channel based on current names
             const voiceChannels = clone.guild.channels.cache.filter(c => c.type === "GUILD_VOICE" &&  c.parentId === clone.parentId).map(v => v.name);
 
@@ -62,16 +93,25 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
             await newState.channel.setName(newName);
             await clone.edit({ position: newState.channel.position });
             await cloneChannel(joinedChannelId, clone.id, guild.id, userId);
-        }
-    } else if (leftChannelId) {
-        // the user left a channel
-        const currentChannel = client.channels.cache.get(leftChannelId);
-        const memberCount = currentChannel.members.size;
 
-        if (memberCount === 0) {
-            if (await getClone(leftChannelId)){
-                await currentChannel.delete();
-                await deleteClone(leftChannelId);
+            if (instructionsId) {
+                await client.channels.cache.get(instructionsId).send(
+`<@${userId}>
+__How to use DittoVC__
+/add user:username#0000 permissions:(all, stream, speak, or listen)
+*- adds the user to the voice chat, defaults to speaking permissions*
+
+/remove user:username#0000
+*- remove the user from the voice chat*
+
+/public
+*- make your voice chat public*
+
+/private
+*- make your voice chat private*
+
+/owner user:username#0000
+*- transfer ownership of the current channel*`);
             }
         }
     }
