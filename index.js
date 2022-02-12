@@ -109,22 +109,24 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     noClone = true;
                 }
                 
+                await claim.permissionOverwrites.create(client.user.id, {
+                    CONNECT: true,
+                    STREAM: true,
+                    SPEAK: true
+                });
 
-                await claim.permissionOverwrites.set([
-                    {
-                        id: client.user.id,
-                        allow: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
-                    },
-                    {
-                        id: userId,
-                        allow: permissions.allow,
-                        deny: permissions.deny
-                    },
-                    {
-                        id: claim.guild.roles.everyone,
-                        deny: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
-                    }
-                ]);
+                await claim.permissionOverwrites.create(userId, {
+                    CONNECT: true,
+                    STREAM: perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
+                    SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                });
+
+                await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
+                    CONNECT: false,
+                    STREAM: false,
+                    SPEAK: false
+                });
+
                 // determine what we should call this channel based on current names
                 const voiceChannels = clone.guild.channels.cache.filter(c => c.type === "GUILD_VOICE" &&  c.parentId === clone.parentId).map(v => v.name);
 
