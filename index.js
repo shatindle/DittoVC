@@ -162,7 +162,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 }
 
                 if (instructionsId) {
-                    await client.channels.cache.get(instructionsId).send(
+                    const tempInstructions = await client.channels.cache.get(instructionsId).send(
 `<@${userId}>
 __How to use DittoVC__
 /add user:username#0000 permissions:(All, Speak, or Listen)
@@ -182,6 +182,13 @@ __How to use DittoVC__
 
 /delete
 > Delete your owned voice chat.`);
+
+                    setTimeout(async function() {
+                        try {
+                            if (tempInstructions.deletable)
+                                await tempInstructions.delete();
+                        } catch { /* errored, but don't care */ }
+                    }, 15000);
                 }
             }
         }
