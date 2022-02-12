@@ -165,6 +165,9 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     const tempInstructions = await client.channels.cache.get(instructionsId).send(
 `<@${userId}>
 __How to use DittoVC__
+/info
+> See the detailed help message.
+
 /add user:username#0000 permissions:(All, Speak, or Listen)
 > Adds the user to the voice chat, defaults to all allowed permissions.
 
@@ -188,7 +191,7 @@ __How to use DittoVC__
                             if (tempInstructions.deletable)
                                 await tempInstructions.delete();
                         } catch { /* errored, but don't care */ }
-                    }, 15000);
+                    }, 60000);
                 }
             }
         }
