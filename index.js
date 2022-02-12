@@ -41,98 +41,99 @@ const currentClaims = {};
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
-    const { channelId: leftChannelId, guild, member } = oldState;
-    let { channelId: joinedChannelId, id: userId } = newState;
+    try {
+        const { channelId: leftChannelId, guild, member } = oldState;
+        let { channelId: joinedChannelId, id: userId } = newState;
 
-    if (joinedChannelId === leftChannelId)
-        return;
-    
-    if (leftChannelId) {
-        // the user left a channel
-        const currentChannel = client.channels.cache.get(leftChannelId);
-        const memberCount = currentChannel.members.size;
+        if (joinedChannelId === leftChannelId)
+            return;
+        
+        if (leftChannelId) {
+            // the user left a channel
+            const currentChannel = client.channels.cache.get(leftChannelId);
+            const memberCount = currentChannel.members.size;
 
-        if (memberCount === 0) {
-            if (await getClone(leftChannelId)){
-                await currentChannel.delete();
-                await deleteClone(leftChannelId);
+            if (memberCount === 0) {
+                if (await getClone(leftChannelId)){
+                    await currentChannel.delete();
+                    await deleteClone(leftChannelId);
+                }
             }
         }
-    }
 
-    if (joinedChannelId) {
-        currentClaims[joinedChannelId] = true;
-        // the user joined a channel
-        if (await isChannelClonable(joinedChannelId)) {
-            let claim = client.channels.cache.get(joinedChannelId);
-            const roleId = await getChannelRole(joinedChannelId);
-            const instructionsId = await getChannelInstructionsDestination(joinedChannelId);
-            let prefix = await getChannelPrefix(joinedChannelId);
-            let permissions = getPermissions(claim, roleId);
-            const clone = await claim.clone(undefined, true, false, "Clone");
+        if (joinedChannelId) {
+            currentClaims[joinedChannelId] = true;
+            // the user joined a channel
+            if (await isChannelClonable(joinedChannelId)) {
+                let claim = client.channels.cache.get(joinedChannelId);
+                const roleId = await getChannelRole(joinedChannelId);
+                const instructionsId = await getChannelInstructionsDestination(joinedChannelId);
+                let prefix = await getChannelPrefix(joinedChannelId);
+                let permissions = getPermissions(claim, roleId);
+                const clone = await claim.clone(undefined, true, false, "Clone");
 
-            let noClone = false;
+                let noClone = false;
 
-            if (currentClaims[joinedChannelId]) {
-                delete currentClaims[joinedChannelId];
-            } else {
-                // claim is taken, you get the clone
-                claim = clone;
-                noClone = true;
-            }
-            
-
-            await claim.permissionOverwrites.set([
-                {
-                    id: client.user.id,
-                    allow: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
-                },
-                {
-                    id: userId,
-                    allow: permissions.allow,
-                    deny: permissions.deny
-                },
-                {
-                    id: claim.guild.roles.everyone,
-                    deny: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
+                if (currentClaims[joinedChannelId]) {
+                    delete currentClaims[joinedChannelId];
+                } else {
+                    // claim is taken, you get the clone
+                    claim = clone;
+                    noClone = true;
                 }
-            ]);
-            // determine what we should call this channel based on current names
-            const voiceChannels = clone.guild.channels.cache.filter(c => c.type === "GUILD_VOICE" &&  c.parentId === clone.parentId).map(v => v.name);
+                
 
-            const prefixCountPosition = prefix.indexOf("{count}");
-            let number = 1;
-            for (var vc of voiceChannels) {
-                if (prefixCountPosition > -1) {
-                    let currentNumber = "";
-                    for (var i = prefixCountPosition; i < vc.length; i++) {
-                        if (isNumber(vc[i]))
-                        currentNumber += vc[i];
-                        else
-                            break;
+                await claim.permissionOverwrites.set([
+                    {
+                        id: client.user.id,
+                        allow: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
+                    },
+                    {
+                        id: userId,
+                        allow: permissions.allow,
+                        deny: permissions.deny
+                    },
+                    {
+                        id: claim.guild.roles.everyone,
+                        deny: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
                     }
+                ]);
+                // determine what we should call this channel based on current names
+                const voiceChannels = clone.guild.channels.cache.filter(c => c.type === "GUILD_VOICE" &&  c.parentId === clone.parentId).map(v => v.name);
 
-                    if (currentNumber && parseInt(currentNumber) >= number) {
-                        number = parseInt(currentNumber) + 1;
+                const prefixCountPosition = prefix.indexOf("{count}");
+                let number = 1;
+                for (var vc of voiceChannels) {
+                    if (prefixCountPosition > -1) {
+                        let currentNumber = "";
+                        for (var i = prefixCountPosition; i < vc.length; i++) {
+                            if (isNumber(vc[i]))
+                            currentNumber += vc[i];
+                            else
+                                break;
+                        }
+
+                        if (currentNumber && parseInt(currentNumber) >= number) {
+                            number = parseInt(currentNumber) + 1;
+                        }
                     }
                 }
-            }
 
-            const newName = prefix.replace("{count}", number);
-            await claim.setName(newName);
+                const newName = prefix.replace("{count}", number);
+                await claim.setName(newName);
 
-            if (noClone) {
-                member.voice.setChannel(claim);
-                await registerClone(claim.id, roleId, guild.id, userId, permissions);
-            } else {
-                await registerClone(claim.id, roleId, guild.id, userId, permissions);
-                await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId);
-                await unregisterChannel(claim.id);
-                await clone.edit({ position: newState.channel.position });
-            }
+                if (noClone) {
+                    member.voice.setChannel(claim);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions);
+                } else {
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions);
+                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId);
+                    await unregisterChannel(claim.id);
+                    await clone.edit({ position: newState.channel.position });
+                }
 
-            if (instructionsId) {
-                await client.channels.cache.get(instructionsId).send(
+                if (instructionsId) {
+                    await client.channels.cache.get(instructionsId).send(
 `<@${userId}>
 __How to use DittoVC__
 /add user:username#0000 permissions:(all, stream, speak, or listen)
@@ -149,8 +150,11 @@ __How to use DittoVC__
 
 /owner user:username#0000
 *- transfer ownership of the current channel*`);
+                }
             }
         }
+    } catch (err) {
+        console.log(`Error in voiceStateUpdate: ${err}`);
     }
 });
 

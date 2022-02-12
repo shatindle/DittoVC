@@ -19,32 +19,36 @@ module.exports = {
             option.setName("permissions")
                 .setDescription("Treat this role as the max permissions allowed")),
 	async execute(interaction) {
-		const { id, guildId, type:channelType } = interaction.options.getChannel("vc");
-
-        if (channelType !== "GUILD_VOICE") {
-            await interaction.reply({ content: "vc parameter needs a voice channel", ephemeral: true });
-            return;
+        try {
+            const { id, guildId, type:channelType } = interaction.options.getChannel("vc");
+    
+            if (channelType !== "GUILD_VOICE") {
+                await interaction.reply({ content: "vc parameter needs a voice channel", ephemeral: true });
+                return;
+            }
+    
+            let prefix = interaction.options.getString("name");
+            const instructions = interaction.options.getChannel("info");
+            const role = interaction.options.getRole("permissions");
+     
+            const roleName = role ? role.name : "everyone";
+    
+            if (!prefix) 
+                prefix = "Voice Chat {count}";
+    
+            await registerChannel(id, guildId, prefix, instructions ? instructions.id : null, role ? role.id : interaction.guild.roles.everyone.id);
+    
+            let content = 
+    `Registered <#${id}> for cloning.
+    New channels will be created with the template "${prefix}".
+    The "${roleName}" role will be the upper limit for permissions.`;
+    
+            if (instructions)
+                content += `\nUsers will be notified in <#${instructions.id}> of what to do.`;
+    
+            await interaction.reply({ content, ephemeral: false });
+        } catch (err) {
+            console.log(`Error in /register: ${err}`);
         }
-
-        let prefix = interaction.options.getString("name");
-        const instructions = interaction.options.getChannel("info");
-        const role = interaction.options.getRole("permissions");
- 
-        const roleName = role ? role.name : "everyone";
-
-        if (!prefix) 
-            prefix = "Voice Chat {count}";
-
-        await registerChannel(id, guildId, prefix, instructions ? instructions.id : null, role ? role.id : interaction.guild.roles.everyone.id);
-
-        let content = 
-`Registered <#${id}> for cloning.
-New channels will be created with the template "${prefix}".
-The "${roleName}" role will be the upper limit for permissions.`;
-
-        if (instructions)
-            content += `\nUsers will be notified in <#${instructions.id}> of what to do.`;
-
-        await interaction.reply({ content, ephemeral: false });
 	},
 };

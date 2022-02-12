@@ -10,10 +10,14 @@ module.exports = {
                 .setDescription("The voice channel to stop cloning")
                 .setRequired(true)),
 	async execute(interaction) {
-		const { id } = interaction.options.getChannel("vc");
-
-        await unregisterChannel(id);
-
-        await interaction.reply({ content: 'un-registered <#' + id + '> for cloning', ephemeral: false });
+        try {
+            const { id } = interaction.options.getChannel("vc");
+    
+            await unregisterChannel(id);
+    
+            await interaction.reply({ content: 'un-registered <#' + id + '> for cloning', ephemeral: false });
+        } catch (err) {
+            console.log(`Error in /unregister: ${err}`);
+        }
 	},
 };
