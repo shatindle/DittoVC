@@ -29,7 +29,7 @@ jobs:
           pm2 stop dittovc
           cp -r $GITHUB_WORKSPACE/* /home/sha_tindle/repos/DittoVC
           rm -rf /home/sha_tindle/repos/DittoVC/node_modules
-          cd /home/sha_tindle/repose/DittoVC
+          cd /home/sha_tindle/repos/DittoVC
           npm install
           npm audit fix || true
           pm2 restart dittovc
