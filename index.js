@@ -117,8 +117,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 await claim.permissionOverwrites.create(userId, {
                     CONNECT: true,
-                    STREAM: perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
-                    SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                    STREAM: permissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
+                    SPEAK: permissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
                 });
 
                 await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
