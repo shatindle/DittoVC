@@ -29,13 +29,14 @@ const CHANNELS_COLLECTION = "channels";
  * @param {String} id The channel ID
  * @param {String} guildId The server ID the channel is associated with (does not change, used to mass delete)
  */
-async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "") {
+async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "") {
     var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
     await ref.set({
         id,
         guildId,
         prefix,
         instructionsId,
+        roleId,
         createdOn: Firestore.Timestamp.now()
     });
 
@@ -43,7 +44,8 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         id,
         guildId,
         prefix,
-        instructionsId
+        instructionsId,
+        roleId
     }, channels);
 }
 
@@ -69,12 +71,6 @@ async function unregisterChannel(id) {
     await ref.delete();
 
     return prefix;
-}
-
-async function cloneChannel(oldId, newId, guildId) {
-    const prefix = await unregisterChannel(oldId);
-
-    await registerChannel(newId, guildId, prefix);
 }
 
 /**
@@ -154,6 +150,25 @@ async function getChannelInstructionsDestination(id) {
     return undefined;
 }
 
+async function getChannelRole(id) {
+    let channel = checkCache(id, "id", channels);
+
+    if (channel)
+        return channel.roleId;
+
+    var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
+    var doc = await ref.get();
+
+    if (doc.exists) {
+        var data = doc.data();
+
+        if (data)
+            return data.roleId;
+    }
+
+    return undefined;
+}
+
 const clones = [];
 const CLONES_COLLECTION = "clones";
 
@@ -181,27 +196,24 @@ const CLONES_COLLECTION = "clones";
  * @param {String} guildId The server ID
  * @param {String} owner The current owner user ID
  */
-async function cloneChannel(oldChannel, newChannel, guildId, owner) {
-    const instructionsId = await getChannelInstructionsDestination(oldChannel);
-    const prefix = await unregisterChannel(oldChannel);
-
-    var ref = await db.collection(CLONES_COLLECTION).doc(oldChannel);
+async function registerClone(claim, roleId, guildId, owner, permissions) {
+    var ref = await db.collection(CLONES_COLLECTION).doc(claim);
     await ref.set({
-        id: oldChannel,
+        id: claim,
         guildId,
         owner,
-        cloneOf: newChannel,
+        roleId,
+        permissions,
         createdOn: Firestore.Timestamp.now()
     });
 
     addToCache({
-        id: oldChannel,
+        id: claim,
         guildId,
         owner,
-        cloneOf: newChannel
+        roleId,
+        permissions
     }, clones);
-
-    await registerChannel(newChannel, guildId, prefix, instructionsId);
 }
 
 /**
@@ -241,16 +253,38 @@ async function getClone(id) {
     return null;
 }
 
+async function getOwnedChannel(owner, guildId) {
+    let channel = checkCache(owner, "owner", clones);
+
+    if (channel)
+        return channel;
+
+    var querySnapshot = await db.collection(CLONES_COLLECTION)
+        .where('owner', '==', owner)
+        .where('guildId', '==', guildId)
+        .get();
+
+    let data = null;
+
+    querySnapshot.forEach((doc) => {
+        data = doc.data();
+    });
+
+    return data;
+}
+
 module.exports = {
     registerChannel,
     unregisterChannel,
     loadChannels,
-    cloneChannel,
     isChannelClonable,
     getChannelPrefix,
     getChannelInstructionsDestination,
+    getChannelRole,
 
-    cloneChannel,
+    registerClone,
     deleteClone,
-    getClone
+    getClone,
+    
+    getOwnedChannel
 };

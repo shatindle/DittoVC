@@ -1,7 +1,18 @@
 const fs = require('fs');
 const { Client, Collection, Intents, Permissions } = require('discord.js');
 const { token } = require('./config.json');
-const { cloneChannel, isChannelClonable, getChannelPrefix, getChannelInstructionsDestination, getClone, deleteClone } = require("./dal/databaseApi");
+const { 
+    registerClone, 
+    isChannelClonable, 
+    getChannelPrefix, 
+    getChannelInstructionsDestination, 
+    getClone, 
+    registerChannel,
+    unregisterChannel,
+    deleteClone,
+    getChannelRole
+} = require("./dal/databaseApi");
+const getPermissions = require('./logic/permissionsLogic');
 
 const client = new Client({ 
     intents: [
@@ -26,12 +37,15 @@ function isNumber(val) {
     return /^\d+$/.test(val);
 }
 
-client.on("voiceStateUpdate", async (oldState, newState) => {
-    console.dir(oldState);
-    console.dir(newState);
+const currentClaims = {};
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-    const { channelId: leftChannelId, guild } = oldState;
-    const { channelId: joinedChannelId, id: userId } = newState;
+client.on("voiceStateUpdate", async (oldState, newState) => {
+    const { channelId: leftChannelId, guild, member } = oldState;
+    let { channelId: joinedChannelId, id: userId } = newState;
+
+    if (joinedChannelId === leftChannelId)
+        return;
     
     if (leftChannelId) {
         // the user left a channel
@@ -47,21 +61,36 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     }
 
     if (joinedChannelId) {
+        currentClaims[joinedChannelId] = true;
         // the user joined a channel
         if (await isChannelClonable(joinedChannelId)) {
+            let claim = client.channels.cache.get(joinedChannelId);
+            const roleId = await getChannelRole(joinedChannelId);
+            const instructionsId = await getChannelInstructionsDestination(joinedChannelId);
             let prefix = await getChannelPrefix(joinedChannelId);
-            let instructionsId = await getChannelInstructionsDestination(joinedChannelId);
-            const claim = client.channels.cache.get(joinedChannelId);
+            let permissions = getPermissions(claim, roleId);
             const clone = await claim.clone(undefined, true, false, "Clone");
-            await claim
-            .permissionOverwrites.set([
+
+            let noClone = false;
+
+            if (currentClaims[joinedChannelId]) {
+                delete currentClaims[joinedChannelId];
+            } else {
+                // claim is taken, you get the clone
+                claim = clone;
+                noClone = true;
+            }
+            
+
+            await claim.permissionOverwrites.set([
                 {
                     id: client.user.id,
                     allow: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
                 },
                 {
                     id: userId,
-                    allow: [Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK, Permissions.FLAGS.STREAM]
+                    allow: permissions.allow,
+                    deny: permissions.deny
                 },
                 {
                     id: claim.guild.roles.everyone,
@@ -90,9 +119,17 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
             }
 
             const newName = prefix.replace("{count}", number);
-            await newState.channel.setName(newName);
-            await clone.edit({ position: newState.channel.position });
-            await cloneChannel(joinedChannelId, clone.id, guild.id, userId);
+            await claim.setName(newName);
+
+            if (noClone) {
+                member.voice.setChannel(claim);
+                await registerClone(claim.id, roleId, guild.id, userId, permissions);
+            } else {
+                await registerClone(claim.id, roleId, guild.id, userId, permissions);
+                await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId);
+                await unregisterChannel(claim.id);
+                await clone.edit({ position: newState.channel.position });
+            }
 
             if (instructionsId) {
                 await client.channels.cache.get(instructionsId).send(
