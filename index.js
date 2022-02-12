@@ -13,6 +13,10 @@ const {
     getChannelRole
 } = require("./dal/databaseApi");
 const getPermissions = require('./logic/permissionsLogic');
+const { 
+    isCooldownInEffect,
+    expireCooldowns
+} = require("./dal/cooldownApi");
 
 const client = new Client({ 
     intents: [
@@ -37,8 +41,11 @@ function isNumber(val) {
     return /^\d+$/.test(val);
 }
 
+// how long after a user creates a VC should they wait before they're allowed to make a new one
+const COOL_DOWN = 1000 * 30;
+
+// this is needed when multiple people join at the same time so we can know who gets what channel
 const currentClaims = {};
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
     try {
@@ -65,9 +72,29 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
             currentClaims[joinedChannelId] = true;
             // the user joined a channel
             if (await isChannelClonable(joinedChannelId)) {
-                let claim = client.channels.cache.get(joinedChannelId);
-                const roleId = await getChannelRole(joinedChannelId);
                 const instructionsId = await getChannelInstructionsDestination(joinedChannelId);
+                let claim = client.channels.cache.get(joinedChannelId);
+                let cooldownTimeRemaining = isCooldownInEffect(userId, guild.id, COOL_DOWN);
+
+                if (cooldownTimeRemaining) {
+                    const bootMember = await claim.guild.members.fetch(userId);
+
+                    if (instructionsId) {
+                        var response = await client.channels.cache.get(instructionsId).send(
+                            `<@${userId}> please wait a few minutes before trying to create a new voice chat`);
+
+                        setTimeout(async function() {
+                            if (response.deletable)
+                                await response.delete();
+                        }, 5000);
+                    }
+
+                    await bootMember.voice.disconnect();
+
+                    return;
+                }
+
+                const roleId = await getChannelRole(joinedChannelId);
                 let prefix = await getChannelPrefix(joinedChannelId);
                 let permissions = getPermissions(claim, roleId);
                 const clone = await claim.clone(undefined, true, false, "Clone");
@@ -136,20 +163,23 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await client.channels.cache.get(instructionsId).send(
 `<@${userId}>
 __How to use DittoVC__
-/add user:username#0000 permissions:(all, stream, speak, or listen)
-*- adds the user to the voice chat, defaults to speaking permissions*
+/add user:username#0000 permissions:(All, Speak, or Listen)
+> Adds the user to the voice chat, defaults to all allowed permissions.
 
 /remove user:username#0000
-*- remove the user from the voice chat*
+> Remove the user from the voice chat.
 
 /public
-*- make your voice chat public*
+> Make your voice chat public.
 
 /private
-*- make your voice chat private*
+> Make your voice chat private.
 
-/owner user:username#0000
-*- transfer ownership of the current channel*`);
+/max limit:number
+> Set a max number of users. 0 removes the limit. Still respects if the channel is public or private.
+
+/delete
+> Delete your owned voice chat.`);
                 }
             }
         }
@@ -174,3 +204,5 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.login(token);
+
+const expireTimer = setInterval(expireCooldowns, COOL_DOWN / 2);

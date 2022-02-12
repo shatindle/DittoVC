@@ -16,8 +16,8 @@ module.exports = {
             let limit = Math.floor(interaction.options.getNumber("limit"));
 
             if (ownedChannel) {
-                if (limit < 1) {
-                    await interaction.reply({ content: `You must specify a limit greater than 0`, ephemeral: true });
+                if (limit < 0) {
+                    await interaction.reply({ content: `You must specify a limit greater than or equal to 0`, ephemeral: true });
                     return;
                 }
 
@@ -30,7 +30,10 @@ module.exports = {
 
                 channel.setUserLimit(limit);
                 
-                await interaction.reply({ content: `The max participants for <#${ownedChannel.id}> is now set to ${limit}`, ephemeral: true });
+                if (limit === 0)
+                    await interaction.reply({ content: `The participant limit for <#${ownedChannel.id}> has been removed`, ephemeral: true });
+                else
+                    await interaction.reply({ content: `The max participants for <#${ownedChannel.id}> is now set to ${limit}`, ephemeral: true });
             } else {
                 await interaction.reply({ content: `You do not own a voice chat. Join a clonable voice chat to claim it`, ephemeral: true });
             }

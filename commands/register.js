@@ -1,3 +1,4 @@
+const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { registerChannel } = require("../dal/databaseApi");
 
@@ -26,6 +27,15 @@ module.exports = {
                 await interaction.reply({ content: "vc parameter needs a voice channel", ephemeral: true });
                 return;
             }
+
+            const channel = await interaction.guild.channels.fetch(id);
+
+            const currentPermissions = channel.permissionsFor(interaction.member.user.id);
+
+            if (!currentPermissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+                await interaction.reply({ content: "You need the MANAGE_CHANNELS permission to run this command", ephemeral: true });
+                return;
+            }
     
             let prefix = interaction.options.getString("name");
             const instructions = interaction.options.getChannel("info");
@@ -35,13 +45,18 @@ module.exports = {
     
             if (!prefix) 
                 prefix = "Voice Chat {count}";
+
+            if (prefix.replace("{count}", "000").length > 32) {
+                await interaction.reply({ content: "Name of the channel must be 28 characters or less.", ephemeral: true });
+                return;
+            }
     
             await registerChannel(id, guildId, prefix, instructions ? instructions.id : null, role ? role.id : interaction.guild.roles.everyone.id);
     
             let content = 
-    `Registered <#${id}> for cloning.
-    New channels will be created with the template "${prefix}".
-    The "${roleName}" role will be the upper limit for permissions.`;
+`Registered <#${id}> for cloning.
+New channels will be created with the template "${prefix}".
+The "${roleName}" role will be the upper limit for permissions.`;
     
             if (instructions)
                 content += `\nUsers will be notified in <#${instructions.id}> of what to do.`;

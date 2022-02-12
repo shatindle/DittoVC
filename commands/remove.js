@@ -1,5 +1,7 @@
+const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getOwnedChannel } = require("../dal/databaseApi");
+const isModWithAccess = require("../logic/modCheckLogic");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -19,6 +21,13 @@ module.exports = {
                 await interaction.reply({ content: `Bots cannot be removed from voice chat`, ephemeral: true });
             } else if (ownedChannel) {
                 const channel = await interaction.guild.channels.fetch(ownedChannel.id);
+
+                // make sure this user isn't already a mod with access
+                if (isModWithAccess(channel, invitedUser.id)) {
+                    // user is a mod and can already connect
+                    await interaction.reply({ content: `This moderator already has access`, ephemeral: true });
+                    return;
+                }
     
                 await channel.permissionOverwrites.create(invitedUser.id, {
                     CONNECT: false
@@ -26,7 +35,7 @@ module.exports = {
                 
                 const member = await interaction.guild.members.fetch(invitedUser.id);
     
-                if (member.voice.channel.id === ownedChannel.id) {
+                if (member.voice.channel && member.voice.channel.id === ownedChannel.id) {
                     
                     await member.voice.disconnect();
                 }

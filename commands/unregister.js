@@ -1,3 +1,4 @@
+const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { unregisterChannel } = require("../dal/databaseApi");
 
@@ -12,6 +13,15 @@ module.exports = {
 	async execute(interaction) {
         try {
             const { id } = interaction.options.getChannel("vc");
+
+            const channel = await interaction.guild.channels.fetch(id);
+
+            const currentPermissions = channel.permissionsFor(interaction.member.user.id);
+
+            if (!currentPermissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+                await interaction.reply({ content: "You need the MANAGE_CHANNELS permission to run this command", ephemeral: true });
+                return;
+            }
     
             await unregisterChannel(id);
     
