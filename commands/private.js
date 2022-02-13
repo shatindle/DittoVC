@@ -1,6 +1,8 @@
+const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getOwnedChannel } = require("../dal/databaseApi");
 const logActivity = require("../logic/logActivity");
+const allowedPermissions = require("../logic/permissionsLogic");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -15,6 +17,29 @@ module.exports = {
     
             if (ownedChannel) {
                 const channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                const perms = allowedPermissions(ownedChannel.permissions, interaction.guild.roles.everyone.id);
+
+                channel.permissionOverwrites.cache.each(async perm => {
+                    if (perm.id !== interaction.client.user.id && perm.type === "member") {
+                        let allowed = new Permissions(perm.allow);
+                        let streamPerms, speakPerms;
+
+                        if (ownedChannel.owner === perm.id) {
+                            // this is the owner, they get full perms allowed
+                            streamPerms = perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1;
+                            speakPerms = perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1;
+                        } else {
+                            streamPerms = perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1 && allowed.has(Permissions.FLAGS.STREAM);
+                            speakPerms = perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1 && allowed.has(Permissions.FLAGS.SPEAK);
+                        }
+
+                        await channel.permissionOverwrites.create(perm.id, {
+                            CONNECT: true,
+                            STREAM: streamPerms,
+                            SPEAK: speakPerms
+                        });
+                    }
+                });
     
                 await channel.permissionOverwrites.create(interaction.guild.roles.everyone.id, {
                     CONNECT: false,

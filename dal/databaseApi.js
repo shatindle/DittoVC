@@ -29,7 +29,7 @@ const CHANNELS_COLLECTION = "channels";
  * @param {String} id The channel ID
  * @param {String} guildId The server ID the channel is associated with (does not change, used to mass delete)
  */
-async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", defaultPublic = false) {
+async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", publicRoleId = "", defaultPublic = false) {
     var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
     await ref.set({
         id,
@@ -37,6 +37,7 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         prefix,
         instructionsId,
         roleId,
+        publicRoleId,
         defaultPublic,
         createdOn: Firestore.Timestamp.now()
     });
@@ -47,6 +48,7 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         prefix,
         instructionsId,
         roleId,
+        publicRoleId,
         defaultPublic
     }, channels);
 }
@@ -171,6 +173,25 @@ async function getChannelRole(id) {
     return undefined;
 }
 
+async function getChannelRolePublic(id) {
+    let channel = checkCache(id, "id", channels);
+
+    if (channel)
+        return channel.publicRoleId ?? channel.roleId;
+
+    var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
+    var doc = await ref.get();
+
+    if (doc.exists) {
+        var data = doc.data();
+
+        if (data)
+            return data.publicRoleId ?? data.roleId;
+    }
+
+    return undefined;
+}
+
 async function doesChannelStartPublic(id) {
     let channel = checkCache(id, "id", channels);
 
@@ -217,7 +238,7 @@ const CLONES_COLLECTION = "clones";
  * @param {String} guildId The server ID
  * @param {String} owner The current owner user ID
  */
-async function registerClone(claim, roleId, guildId, owner, permissions) {
+async function registerClone(claim, roleId, guildId, owner, permissions, publicPermissions = null) {
     var ref = await db.collection(CLONES_COLLECTION).doc(claim);
     await ref.set({
         id: claim,
@@ -225,6 +246,7 @@ async function registerClone(claim, roleId, guildId, owner, permissions) {
         owner,
         roleId,
         permissions,
+        publicPermissions,
         createdOn: Firestore.Timestamp.now()
     });
 
@@ -233,7 +255,8 @@ async function registerClone(claim, roleId, guildId, owner, permissions) {
         guildId,
         owner,
         roleId,
-        permissions
+        permissions,
+        publicPermissions
     }, clones);
 }
 
@@ -353,6 +376,7 @@ module.exports = {
     getChannelPrefix,
     getChannelInstructionsDestination,
     getChannelRole,
+    getChannelRolePublic,
     doesChannelStartPublic,
 
     registerClone,

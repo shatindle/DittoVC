@@ -33,7 +33,7 @@ await interaction.reply({ content:
 > Display this help message.
 
 __Mod Commands__
-/register vc:voice-channel info:text-channel permissions:role name:text
+/register vc:voice-channel info:text-channel permissions:role publicpermissions:role ispublic:boolean name:text
 > Register a voice channel for cloning. Info and permissions are optional. ` +
 `Use info to specify a text channel where instructions will be sent to the user creating a voice chat. ` +
 `Use permissions to specify a role to control the maximum permissions a user is allowed to have. ` + 
