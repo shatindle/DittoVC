@@ -66,7 +66,11 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
         
         if (leftChannelId) {
             // the user left a channel
-            const currentChannel = client.channels.cache.get(leftChannelId);
+            let currentChannel = client.channels.cache.get(leftChannelId);
+
+            if (!currentChannel)
+                currentChannel = await client.channels.fetch(leftChannelId);
+
             const channelName = currentChannel.name;
             const memberCount = currentChannel.members.size;
 
@@ -83,6 +87,10 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
         if (joinedChannelId) {
             currentClaims[joinedChannelId] = true;
             let claim = client.channels.cache.get(joinedChannelId);
+
+            if (!claim)
+                claim = await client.channels.fetch(joinedChannelId);
+
             // the user joined a channel
             if (await isChannelClonable(joinedChannelId)) {
                 const instructionsId = await getChannelInstructionsDestination(joinedChannelId);
@@ -92,7 +100,12 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     const bootMember = await claim.guild.members.fetch(userId);
 
                     if (instructionsId) {
-                        var response = await client.channels.cache.get(instructionsId).send(
+                        var instructionsChannel = client.channels.cache.get(instructionsId);
+
+                        if (!instructionsChannel)
+                            instructionsChannel = await client.channels.fetch(instructionsId);
+                        
+                        var response = await instructionsChannel.send(
                             `<@${userId}> please wait a few minutes before trying to create a new voice chat`);
 
                         setTimeout(async function() {
@@ -199,7 +212,12 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 await logActivity(client, guild.id, "User created VC", `<@${userId}> created ${newName}`);
 
                 if (instructionsId) {
-                    const tempInstructions = await client.channels.cache.get(instructionsId).send(
+                    var instructionsChannel = client.channels.cache.get(instructionsId);
+
+                    if (!instructionsChannel)
+                        instructionsChannel = await client.channels.fetch(instructionsId);
+
+                    const tempInstructions = await instructionsChannel.send(
 `<@${userId}>
 __How to use DittoVC__
 /info
