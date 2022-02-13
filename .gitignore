@@ -106,3 +106,4 @@ dist
 # custom
 config.json
 firebase.json
+config.debug.json
