@@ -1,6 +1,7 @@
 const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { registerChannel } = require("../dal/databaseApi");
+const logActivity = require("../logic/logActivity");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -24,6 +25,8 @@ module.exports = {
                 .setDescription("Sets the channel to start as public or private.  Defaults to private.")),
 	async execute(interaction) {
         try {
+            await logActivity(interaction.client, interaction.guild.id, "Mod registered clone VC", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+
             const { id, guildId, type:channelType } = interaction.options.getChannel("vc");
     
             if (channelType !== "GUILD_VOICE") {

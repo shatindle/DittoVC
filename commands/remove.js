@@ -1,7 +1,7 @@
-const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getOwnedChannel } = require("../dal/databaseApi");
 const isModWithAccess = require("../logic/modCheckLogic");
+const logActivity = require("../logic/logActivity");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -13,6 +13,8 @@ module.exports = {
                 .setRequired(true)),
 	async execute(interaction) {
         try {
+            await logActivity(interaction.client, interaction.guild.id, "User removed from VC", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+
             const invitedUser = interaction.options.getUser("user");
             const guildId = interaction.guild.id;
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);

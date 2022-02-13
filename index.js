@@ -11,13 +11,15 @@ const {
     unregisterChannel,
     deleteClone,
     getChannelRole,
-    doesChannelStartPublic
+    doesChannelStartPublic,
+    loadAllLogChannels
 } = require("./dal/databaseApi");
 const getPermissions = require('./logic/permissionsLogic');
 const { 
     isCooldownInEffect,
     expireCooldowns
 } = require("./dal/cooldownApi");
+const logActivity = require('./logic/logActivity');
 
 const client = new Client({ 
     intents: [
@@ -34,8 +36,14 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-client.once('ready', () => {
-	console.log('Ready!');
+let logChannelsLoaded = false;
+
+client.once('ready', async () => {
+	if (!logChannelsLoaded) {
+        await loadAllLogChannels();
+        logChannelsLoaded = true;
+    }
+    console.log("ready!");
 });
 
 function isNumber(val) {
@@ -59,6 +67,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
         if (leftChannelId) {
             // the user left a channel
             const currentChannel = client.channels.cache.get(leftChannelId);
+            const channelName = currentChannel.name;
             const memberCount = currentChannel.members.size;
 
             if (memberCount === 0) {
@@ -67,14 +76,16 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await deleteClone(leftChannelId);
                 }
             }
+
+            await logActivity(client, guild.id, "User left VC", `<@${userId}> left ${channelName}`);
         }
 
         if (joinedChannelId) {
             currentClaims[joinedChannelId] = true;
+            let claim = client.channels.cache.get(joinedChannelId);
             // the user joined a channel
             if (await isChannelClonable(joinedChannelId)) {
                 const instructionsId = await getChannelInstructionsDestination(joinedChannelId);
-                let claim = client.channels.cache.get(joinedChannelId);
                 let cooldownTimeRemaining = isCooldownInEffect(userId, guild.id, COOL_DOWN);
 
                 if (cooldownTimeRemaining) {
@@ -92,6 +103,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                     await bootMember.voice.disconnect();
 
+                    await logActivity(client, guild.id, "Join cooldown in effect", `<@${userId}> tried to create a VC, but hit cooldown`);
                     return;
                 }
 
@@ -184,6 +196,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await clone.edit({ position: newState.channel.position });
                 }
 
+                await logActivity(client, guild.id, "User created VC", `<@${userId}> created ${newName}`);
+
                 if (instructionsId) {
                     const tempInstructions = await client.channels.cache.get(instructionsId).send(
 `<@${userId}>
@@ -216,6 +230,8 @@ __How to use DittoVC__
                         } catch { /* errored, but don't care */ }
                     }, 60000);
                 }
+            } else {
+                await logActivity(client, guild.id, "User joined VC", `<@${userId}> joined ${claim.name}`);
             }
         }
     } catch (err) {

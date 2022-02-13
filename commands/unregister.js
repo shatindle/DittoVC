@@ -1,6 +1,7 @@
 const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { unregisterChannel } = require("../dal/databaseApi");
+const logActivity = require("../logic/logActivity");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,6 +13,8 @@ module.exports = {
                 .setRequired(true)),
 	async execute(interaction) {
         try {
+            await logActivity(interaction.client, interaction.guild.id, "Mod unregistered clone VC", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+
             const { id } = interaction.options.getChannel("vc");
 
             const channel = await interaction.guild.channels.fetch(id);
