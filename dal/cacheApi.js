@@ -7,7 +7,7 @@
 function addToCache(item, cache, limit = 1000) {
     cache.unshift(item);
 
-    while (cache.length > limit)
+    while (limit > 0 && cache.length > limit)
         cache.pop();
 }
 

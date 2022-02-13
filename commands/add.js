@@ -3,6 +3,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getOwnedChannel } = require("../dal/databaseApi");
 const allowedPermissions = require("../logic/permissionsLogic");
 const isModWithAccess = require("../logic/modCheckLogic");
+const logActivity = require("../logic/logActivity");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,6 +21,8 @@ module.exports = {
                 .addChoice("Listen", "listen")),
 	async execute(interaction) {
         try {
+            await logActivity(interaction.client, interaction.guild.id, "User added to VC", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+
             const invitedUser = interaction.options.getUser("user");
             const request = interaction.options.getString("permissions");
             const guildId = interaction.guild.id;

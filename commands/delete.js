@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getOwnedChannel, deleteClone } = require("../dal/databaseApi");
+const logActivity = require('../logic/logActivity');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -7,6 +8,8 @@ module.exports = {
 		.setDescription('Delete the channel you own'),
 	async execute(interaction) {
         try {
+            await logActivity(interaction.client, interaction.guild.id, "VC deleted", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+
             const guildId = interaction.guild.id;
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
     

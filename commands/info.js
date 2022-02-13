@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { getOwnedChannel } = require("../dal/databaseApi");
+const logActivity = require('../logic/logActivity');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -7,6 +7,8 @@ module.exports = {
 		.setDescription('Get info about this bot, including mod commands'),
 	async execute(interaction) {
         try {
+            await logActivity(interaction.client, interaction.guild.id, "User requested help", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+
 await interaction.reply({ content: 
 `__How to use DittoVC__
 /add user:username#0000 permissions:(All, Speak, or Listen)

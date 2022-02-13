@@ -294,6 +294,57 @@ async function getOwnedChannel(owner, guildId) {
     return data;
 }
 
+const logs = [];
+const LOGS_COLLECTION = "logs";
+
+/**
+ * @description Clone a cloneable channel
+ * @param {String} id The channel ID
+ * @param {String} guildId The server ID
+ * @param {String} owner The current owner user ID
+ */
+ async function registerLogs(guildId, channelId) {
+    var ref = await db.collection(LOGS_COLLECTION).doc(guildId);
+    var docs = await ref.get();
+
+    if (channelId) {
+        await ref.set({
+            id: guildId,
+            channelId,
+            createdOn: Firestore.Timestamp.now()
+        });
+    } else {
+        if (docs.exists) {
+            await ref.delete();
+        }
+    }
+
+    addToCache({
+        id: guildId,
+        channelId
+    }, logs, 0);
+}
+
+async function loadAllLogChannels() {
+    var ref = await db.collection(LOGS_COLLECTION);
+    var docs = await ref.get();
+
+    if (docs.size > 0) {
+        docs.forEach(e => {
+            var data = e.data();
+
+            logs[data.id] = data;
+        });
+    }
+}
+
+function getLogChannel(guildId) {
+    if (logs[guildId])
+        return logs[guildId].channelId;
+
+    return null;
+}
+
 module.exports = {
     registerChannel,
     unregisterChannel,
@@ -308,5 +359,9 @@ module.exports = {
     deleteClone,
     getClone,
     
-    getOwnedChannel
+    getOwnedChannel,
+
+    registerLogs,
+    loadAllLogChannels,
+    getLogChannel
 };

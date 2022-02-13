@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getOwnedChannel } = require("../dal/databaseApi");
+const logActivity = require("../logic/logActivity");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -11,6 +12,8 @@ module.exports = {
                 .setRequired(true)),
 	async execute(interaction) {
         try {
+            await logActivity(interaction.client, interaction.guild.id, "User changed max users", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+
             const guildId = interaction.guild.id;
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
             let limit = Math.floor(interaction.options.getNumber("limit"));
