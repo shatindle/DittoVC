@@ -10,20 +10,34 @@ Basically:
 - user issues command to invite or make it public
 - when all have left, bot deletes the vc
 
-## Commands
-/delete - delete current owned vc
+## Channel Owner Commands
+/add user:username#0000 permissions:(All, Speak, or Listen)
+- Adds the user to the voice chat, defaults to all allowed permissions.
 
-/add user:ref permissions:[ speak (default), listen ] - adds permissions for the specified user to connect
+/remove user:username#0000
+- Remove the user from the voice chat.
 
-/remove user:ref - removes permissions for the specified user to connect
+/public
+- Make your voice chat public.
 
-/public - make the current owned chat public
+/private
+- Make your voice chat private.
 
-/private - make the current owned chat private
+/max limit:number
+- Set a max number of users. 0 removes the limit. Still respects if the channel is public or private.
 
-/owner user:ref - give another user ownership of the current channel
+/delete
+- Delete your owned voice chat.
+
+/info
+- Display this help message.
 
 ## Mod Commands
-/register ?channel:ref - the VC the current issuer is in will now be a spawn base
+/register vc:voice-channel info:text-channel permissions:role name:text
+- Register a voice channel for cloning. Info and permissions are optional. Use info to specify a text channel where instructions will be sent to the user creating a voice chat. Use permissions to specify a role to control the maximum permissions a user is allowed to have. For instance, if you do not want to allow streaming in your server, make a role that restricts streaming permissions on the channel, then register the voice channel specifying permissions:@YourRole. Streaming would then be restricted on that voice channel for everyone, including the owner. Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number.
 
-/unregister ?channel:ref - unregisters a chat by reference
+/unregister vc:voice-channel
+- Unregister a voice channel for cloning.
+
+/log to:text-channel
+- Log all commands, creations, joins, and leaves for this server to a channel.
