@@ -142,19 +142,32 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 const prefixCountPosition = prefix.indexOf("{count}");
                 let number = 1;
+                let allNumbers = [];
                 for (var vc of voiceChannels) {
                     if (prefixCountPosition > -1) {
                         let currentNumber = "";
                         for (var i = prefixCountPosition; i < vc.length; i++) {
                             if (isNumber(vc[i]))
-                            currentNumber += vc[i];
+                                currentNumber += vc[i];
                             else
                                 break;
                         }
 
-                        if (currentNumber && parseInt(currentNumber) >= number) {
-                            number = parseInt(currentNumber) + 1;
+                        if (currentNumber && parseInt(currentNumber) > 0) {
+                            allNumbers.push(parseInt(currentNumber));
                         }
+                    }
+                }
+
+                allNumbers.sort(function(a, b) {
+                    return a - b;
+                });
+
+                for (var num of allNumbers) {
+                    if (number === num) {
+                        number++;
+                    } else {
+                        break;
                     }
                 }
 
