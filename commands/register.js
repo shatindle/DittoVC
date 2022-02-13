@@ -19,10 +19,13 @@ module.exports = {
                 .setDescription("The text channel to give users instructions in"))
         .addRoleOption(option => 
             option.setName("permissions")
-                .setDescription("Treat this role as the max permissions allowed"))
+                .setDescription("Treat this role as the max permissions allowed for private VCs"))
         .addBooleanOption(option => 
             option.setName("ispublic")
-                .setDescription("Sets the channel to start as public or private.  Defaults to private.")),
+                .setDescription("Sets the channel to start as public or private.  Defaults to private."))
+        .addRoleOption(option => 
+            option.setName("publicpermissions")
+                .setDescription("Treat this role as the max permissions allowed for public VCs")),
 	async execute(interaction) {
         try {
             await logActivity(interaction.client, interaction.guild.id, "Mod registered clone VC", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
@@ -45,10 +48,15 @@ module.exports = {
     
             let prefix = interaction.options.getString("name");
             const instructions = interaction.options.getChannel("info");
-            const role = interaction.options.getRole("permissions");
+            let privateRole = interaction.options.getRole("permissions");
+            let publicRole = interaction.options.getRole("publicpermissions");
             const ispublic = interaction.options.getBoolean("ispublic") === true;
-     
-            const roleName = role ? role.name : "everyone";
+
+            if (!privateRole)
+                privateRole = interaction.guild.roles.everyone;
+
+            if (!publicRole)
+                publicRole = privateRole;
     
             if (!prefix) 
                 prefix = "Voice Chat {count}";
@@ -58,12 +66,20 @@ module.exports = {
                 return;
             }
     
-            await registerChannel(id, guildId, prefix, instructions ? instructions.id : null, role ? role.id : interaction.guild.roles.everyone.id, ispublic);
+            await registerChannel(
+                id, 
+                guildId, 
+                prefix, 
+                instructions ? instructions.id : null, 
+                privateRole.id,
+                publicRole.id,
+                ispublic);
     
             let content = 
 `Registered <#${id}> for cloning.
 New channels will be created with the template "${prefix}".
-The "${roleName}" role will be the upper limit for permissions.`;
+The "${privateRole.name.replace("@", "")}" role will be the upper limit for permissions when a channel is private.
+The "${publicRole.name.replace("@", "")}" role will be the upper limit for permissions when a channel is public."`;
     
             if (instructions)
                 content += `\nUsers will be notified in <#${instructions.id}> of what to do.`;

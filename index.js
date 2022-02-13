@@ -11,6 +11,7 @@ const {
     unregisterChannel,
     deleteClone,
     getChannelRole,
+    getChannelRolePublic,
     doesChannelStartPublic,
     loadAllLogChannels
 } = require("./dal/databaseApi");
@@ -121,9 +122,16 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 }
 
                 const roleId = await getChannelRole(joinedChannelId);
+                let publicRoleId = await getChannelRolePublic(joinedChannelId);
+
+                if (!publicRoleId)
+                    publicRoleId = roleId;
+
                 const channelStartsPublic = await doesChannelStartPublic(joinedChannelId);
                 let prefix = await getChannelPrefix(joinedChannelId);
-                let permissions = getPermissions(claim, roleId);
+                const permissions = getPermissions(claim, roleId);
+                const publicPermissions = getPermissions(claim, publicRoleId);
+
                 const clone = await claim.clone(undefined, true, false, "Clone");
 
                 let noClone = false;
@@ -142,19 +150,25 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     SPEAK: true
                 });
 
-                await claim.permissionOverwrites.create(userId, {
-                    CONNECT: true,
-                    STREAM: permissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
-                    SPEAK: permissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
-                });
-
                 if (channelStartsPublic) {
+                    await claim.permissionOverwrites.create(userId, {
+                        CONNECT: true,
+                        STREAM: publicPermissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
+                        SPEAK: publicPermissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                    });
+
                     await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
+                        CONNECT: true,
+                        STREAM: publicPermissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
+                        SPEAK: publicPermissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                    });
+                } else {
+                    await claim.permissionOverwrites.create(userId, {
                         CONNECT: true,
                         STREAM: permissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
                         SPEAK: permissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
                     });
-                } else {
+                    
                     await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
                         CONNECT: false,
                         STREAM: false,
@@ -201,10 +215,10 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 if (noClone) {
                     member.voice.setChannel(claim);
-                    await registerClone(claim.id, roleId, guild.id, userId, permissions);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions);
                 } else {
-                    await registerClone(claim.id, roleId, guild.id, userId, permissions);
-                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, channelStartsPublic);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions);
+                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic);
                     await unregisterChannel(claim.id);
                     await clone.edit({ position: newState.channel.position });
                 }
