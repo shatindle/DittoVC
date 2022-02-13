@@ -29,6 +29,9 @@ await interaction.reply({ content:
 /delete
 > Delete your owned voice chat.
 
+/info
+> Display this help message.
+
 __Mod Commands__
 /register vc:voice-channel info:text-channel permissions:role name:text
 > Register a voice channel for cloning. Info and permissions are optional. ` +
@@ -39,7 +42,10 @@ __Mod Commands__
 `Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number.
 
 /unregister vc:voice-channel
-> Unregister a voice channel for cloning.`, ephemeral: true });
+> Unregister a voice channel for cloning.
+
+/log to:text-channel
+> Log all commands, creations, joins, and leaves for this server to a channel.`, ephemeral: true });
         } catch (err) {
             console.log(`Error in /info: ${err}`);
         }
