@@ -18,7 +18,10 @@ module.exports = {
                 .setDescription("The text channel to give users instructions in"))
         .addRoleOption(option => 
             option.setName("permissions")
-                .setDescription("Treat this role as the max permissions allowed")),
+                .setDescription("Treat this role as the max permissions allowed"))
+        .addBooleanOption(option => 
+            option.setName("ispublic")
+                .setDescription("Sets the channel to start as public or private.  Defaults to private.")),
 	async execute(interaction) {
         try {
             const { id, guildId, type:channelType } = interaction.options.getChannel("vc");
@@ -40,6 +43,7 @@ module.exports = {
             let prefix = interaction.options.getString("name");
             const instructions = interaction.options.getChannel("info");
             const role = interaction.options.getRole("permissions");
+            const ispublic = interaction.options.getBoolean("ispublic") === true;
      
             const roleName = role ? role.name : "everyone";
     
@@ -51,7 +55,7 @@ module.exports = {
                 return;
             }
     
-            await registerChannel(id, guildId, prefix, instructions ? instructions.id : null, role ? role.id : interaction.guild.roles.everyone.id);
+            await registerChannel(id, guildId, prefix, instructions ? instructions.id : null, role ? role.id : interaction.guild.roles.everyone.id, ispublic);
     
             let content = 
 `Registered <#${id}> for cloning.

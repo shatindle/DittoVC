@@ -10,7 +10,8 @@ const {
     registerChannel,
     unregisterChannel,
     deleteClone,
-    getChannelRole
+    getChannelRole,
+    doesChannelStartPublic
 } = require("./dal/databaseApi");
 const getPermissions = require('./logic/permissionsLogic');
 const { 
@@ -95,6 +96,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 }
 
                 const roleId = await getChannelRole(joinedChannelId);
+                const channelStartsPublic = await doesChannelStartPublic(joinedChannelId);
                 let prefix = await getChannelPrefix(joinedChannelId);
                 let permissions = getPermissions(claim, roleId);
                 const clone = await claim.clone(undefined, true, false, "Clone");
@@ -121,11 +123,19 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     SPEAK: permissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
                 });
 
-                await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
-                    CONNECT: false,
-                    STREAM: false,
-                    SPEAK: false
-                });
+                if (channelStartsPublic) {
+                    await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
+                        CONNECT: true,
+                        STREAM: permissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
+                        SPEAK: permissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                    });
+                } else {
+                    await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
+                        CONNECT: false,
+                        STREAM: false,
+                        SPEAK: false
+                    });
+                }
 
                 // determine what we should call this channel based on current names
                 const voiceChannels = clone.guild.channels.cache.filter(c => c.type === "GUILD_VOICE" &&  c.parentId === clone.parentId).map(v => v.name);
@@ -156,7 +166,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await registerClone(claim.id, roleId, guild.id, userId, permissions);
                 } else {
                     await registerClone(claim.id, roleId, guild.id, userId, permissions);
-                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId);
+                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, channelStartsPublic);
                     await unregisterChannel(claim.id);
                     await clone.edit({ position: newState.channel.position });
                 }
