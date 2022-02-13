@@ -29,7 +29,7 @@ const CHANNELS_COLLECTION = "channels";
  * @param {String} id The channel ID
  * @param {String} guildId The server ID the channel is associated with (does not change, used to mass delete)
  */
-async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "") {
+async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", defaultPublic = false) {
     var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
     await ref.set({
         id,
@@ -37,6 +37,7 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         prefix,
         instructionsId,
         roleId,
+        defaultPublic,
         createdOn: Firestore.Timestamp.now()
     });
 
@@ -45,7 +46,8 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         guildId,
         prefix,
         instructionsId,
-        roleId
+        roleId,
+        defaultPublic
     }, channels);
 }
 
@@ -169,6 +171,25 @@ async function getChannelRole(id) {
     return undefined;
 }
 
+async function doesChannelStartPublic(id) {
+    let channel = checkCache(id, "id", channels);
+
+    if (channel)
+        return channel.defaultPublic;
+
+    var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
+    var doc = await ref.get();
+
+    if (doc.exists) {
+        var data = doc.data();
+
+        if (data)
+            return data.defaultPublic;
+    }
+
+    return undefined;
+}
+
 const clones = [];
 const CLONES_COLLECTION = "clones";
 
@@ -281,6 +302,7 @@ module.exports = {
     getChannelPrefix,
     getChannelInstructionsDestination,
     getChannelRole,
+    doesChannelStartPublic,
 
     registerClone,
     deleteClone,
