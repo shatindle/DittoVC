@@ -5,7 +5,10 @@ async function logActivity(client, guildId, action, activity) {
     try {
         const logChannel = getLogChannel(guildId);
 
-        const channel = client.channels.cache.get(logChannel);
+        let channel = client.channels.cache.get(logChannel);
+
+        if (!channel)
+            channel = client.channels.fetch(logChannel);
 
         const message = new MessageEmbed()
             .setColor("#d3c3df")
