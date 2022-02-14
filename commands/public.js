@@ -38,6 +38,15 @@ module.exports = {
                             STREAM: streamPerms,
                             SPEAK: speakPerms
                         });
+
+                        if (!streamPerms) {
+                            // if the user is streaming, disconnect them
+                            const member = await interaction.guild.members.fetch(perm.id);
+
+                            if (member.voice.streaming && member.voice.channel && member.voice.channel.id === ownedChannel.id) {
+                                await member.voice.disconnect();
+                            }
+                        }
                     }
                 });
 
