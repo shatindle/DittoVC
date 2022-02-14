@@ -37,11 +37,22 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
+function updateStatus() {
+    try {
+        client.user.setActivity(`Clone VC in ${client.guilds.cache.size} servers`);
+    } catch (err) {
+        console.log(`Error updating status: ${err}`)
+    }
+}
+
 let logChannelsLoaded = false;
+let statusTimer;
 
 client.once('ready', async () => {
 	if (!logChannelsLoaded) {
         await loadAllLogChannels();
+        updateStatus();
+        statusTimer = setInterval(updateStatus, 1000 * 60 * 60);
         logChannelsLoaded = true;
     }
     console.log("ready!");
