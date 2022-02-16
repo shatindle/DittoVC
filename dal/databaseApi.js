@@ -29,7 +29,7 @@ const CHANNELS_COLLECTION = "channels";
  * @param {String} id The channel ID
  * @param {String} guildId The server ID the channel is associated with (does not change, used to mass delete)
  */
-async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", publicRoleId = "", defaultPublic = false) {
+async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", publicRoleId = "", defaultPublic = false, rename = false) {
     var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
     await ref.set({
         id,
@@ -39,6 +39,7 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         roleId,
         publicRoleId,
         defaultPublic,
+        rename,
         createdOn: Firestore.Timestamp.now()
     });
 
@@ -49,7 +50,8 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         instructionsId,
         roleId,
         publicRoleId,
-        defaultPublic
+        defaultPublic,
+        rename
     }, channels);
 }
 
@@ -104,8 +106,10 @@ async function isChannelClonable(id) {
     if (doc.exists) {
         var data = doc.data();
 
-        if (data)
+        if (data) {
+            addToCache(data, channels);
             return true;
+        }
     }
 
     return false;
@@ -128,8 +132,10 @@ async function getChannelPrefix(id) {
     if (doc.exists) {
         var data = doc.data();
 
-        if (data)
+        if (data) {
+            addToCache(data, channels);
             return data.prefix;
+        }
     }
 
     return "Voice Chat {count}";
@@ -147,8 +153,10 @@ async function getChannelInstructionsDestination(id) {
     if (doc.exists) {
         var data = doc.data();
 
-        if (data)
+        if (data) {
+            addToCache(data, channels);
             return data.instructionsId;
+        }
     }
 
     return undefined;
@@ -166,8 +174,10 @@ async function getChannelRole(id) {
     if (doc.exists) {
         var data = doc.data();
 
-        if (data)
+        if (data) {
+            addToCache(data, channels);
             return data.roleId;
+        }
     }
 
     return undefined;
@@ -185,8 +195,10 @@ async function getChannelRolePublic(id) {
     if (doc.exists) {
         var data = doc.data();
 
-        if (data)
+        if (data) {
+            addToCache(data, channels);
             return data.publicRoleId ?? data.roleId;
+        }
     }
 
     return undefined;
@@ -204,11 +216,34 @@ async function doesChannelStartPublic(id) {
     if (doc.exists) {
         var data = doc.data();
 
-        if (data)
+        if (data) {
+            addToCache(data, channels);
             return data.defaultPublic;
+        }
     }
 
     return undefined;
+}
+
+async function doesChannelAllowRenaming(id) {
+    let channel = checkCache(id, "id", channels);
+
+    if (channel)
+        return channel.rename;
+
+    var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
+    var doc = await ref.get();
+
+    if (doc.exists) {
+        var data = doc.data();
+
+        if (data) {
+            addToCache(data, channels);
+            return data.rename;
+        }
+    }
+
+    return false;
 }
 
 const clones = [];
@@ -238,7 +273,7 @@ const CLONES_COLLECTION = "clones";
  * @param {String} guildId The server ID
  * @param {String} owner The current owner user ID
  */
-async function registerClone(claim, roleId, guildId, owner, permissions, publicPermissions = null) {
+async function registerClone(claim, roleId, guildId, owner, permissions, publicPermissions = null, rename = false) {
     var ref = await db.collection(CLONES_COLLECTION).doc(claim);
     await ref.set({
         id: claim,
@@ -247,6 +282,7 @@ async function registerClone(claim, roleId, guildId, owner, permissions, publicP
         roleId,
         permissions,
         publicPermissions,
+        rename,
         createdOn: Firestore.Timestamp.now()
     });
 
@@ -256,7 +292,8 @@ async function registerClone(claim, roleId, guildId, owner, permissions, publicP
         owner,
         roleId,
         permissions,
-        publicPermissions
+        publicPermissions,
+        rename
     }, clones);
 }
 
@@ -290,8 +327,10 @@ async function getClone(id) {
     if (doc.exists) {
         var data = doc.data();
 
-        if (data)
+        if (data) {
+            addToCache(data, clones);
             return data;
+        }
     }
 
     return null;
@@ -314,7 +353,26 @@ async function getOwnedChannel(owner, guildId) {
         data = doc.data();
     });
 
+    if (data)
+        addToCache(data, clones);
+
     return data;
+}
+
+async function nameOwnedChannel(id, name) {
+    const channel = await getClone(id);
+
+    if (channel) {
+        channel.name = name;
+
+        await db.collection(CLONES_COLLECTION).doc(id).update({
+            name
+        });
+
+        return;
+    }
+
+    throw "Channel doesn't exist";
 }
 
 const logs = [];
@@ -368,6 +426,71 @@ function getLogChannel(guildId) {
     return null;
 }
 
+const blacklist = {};
+const BLACKLIST_COLLECTION = "blacklist";
+
+async function loadAllBlacklists() {
+    var ref = await db.collection(BLACKLIST_COLLECTION);
+    var docs = await ref.get();
+
+    if (docs.size > 0) {
+        docs.forEach(e => {
+            var data = e.data();
+
+            blacklist[data.id] = data;
+        });
+    }
+}
+
+function getBlacklist(guildId) {
+    if (blacklist[guildId])
+        return blacklist[guildId].blacklist;
+
+    return [];
+}
+
+const BLACKLIST_LIMIT = 500;
+
+async function addToBlacklist(guildId, text) {
+    let list;
+
+    if (blacklist[guildId]) {
+        if (blacklist[guildId].blacklist.length > BLACKLIST_LIMIT)
+            return "LIMIT EXCEEDED";
+
+        if (blacklist[guildId].blacklist.indexOf(text) > -1)
+            return;
+
+        blacklist[guildId].blacklist.push(text);
+
+        list = blacklist[guildId];
+    } else {
+        list = {
+            blacklist: [text],
+            id: guildId
+        };
+
+        blacklist[guildId] = list;
+    }
+
+    const ref = await db.collection(BLACKLIST_COLLECTION).doc(guildId);
+    await ref.set(list);
+}
+
+async function removeFromBlacklist(guildId, text) {
+    if (blacklist[guildId] && blacklist[guildId].blacklist) {
+        const position = blacklist[guildId].blacklist.indexOf(text);
+        
+        if (position > -1) {
+            blacklist[guildId].blacklist.splice(position, 1);
+
+            const ref = await db.collection(BLACKLIST_COLLECTION).doc(guildId);
+
+            await ref.set(blacklist[guildId]);
+        }
+    }
+}
+
 module.exports = {
     registerChannel,
     unregisterChannel,
@@ -378,14 +501,22 @@ module.exports = {
     getChannelRole,
     getChannelRolePublic,
     doesChannelStartPublic,
+    doesChannelAllowRenaming,
 
     registerClone,
     deleteClone,
     getClone,
     
     getOwnedChannel,
+    nameOwnedChannel,
 
     registerLogs,
     loadAllLogChannels,
-    getLogChannel
+    getLogChannel,
+
+    loadAllBlacklists,
+    getBlacklist,
+    addToBlacklist,
+    removeFromBlacklist,
+    BLACKLIST_LIMIT
 };

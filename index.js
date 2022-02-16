@@ -13,7 +13,9 @@ const {
     getChannelRole,
     getChannelRolePublic,
     doesChannelStartPublic,
-    loadAllLogChannels
+    doesChannelAllowRenaming,
+    loadAllLogChannels,
+    loadAllBlacklists
 } = require("./dal/databaseApi");
 const getPermissions = require('./logic/permissionsLogic');
 const { 
@@ -45,15 +47,16 @@ function updateStatus() {
     }
 }
 
-let logChannelsLoaded = false;
+let loaded = false;
 let statusTimer;
 
 client.once('ready', async () => {
-	if (!logChannelsLoaded) {
+	if (!loaded) {
         await loadAllLogChannels();
+        await loadAllBlacklists();
         updateStatus();
         statusTimer = setInterval(updateStatus, 1000 * 60 * 60);
-        logChannelsLoaded = true;
+        loaded = true;
     }
     console.log("ready!");
 });
@@ -139,6 +142,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     publicRoleId = roleId;
 
                 const channelStartsPublic = await doesChannelStartPublic(joinedChannelId);
+                const channelAllowsRenaming = await doesChannelAllowRenaming(joinedChannelId);
                 let prefix = await getChannelPrefix(joinedChannelId);
                 const permissions = getPermissions(claim, roleId);
                 const publicPermissions = getPermissions(claim, publicRoleId);
@@ -226,10 +230,10 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 if (noClone) {
                     member.voice.setChannel(claim);
-                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming);
                 } else {
-                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions);
-                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming);
+                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic, channelAllowsRenaming);
                     await unregisterChannel(claim.id);
                     await clone.edit({ position: newState.channel.position });
                 }

@@ -28,7 +28,7 @@ module.exports = {
     
             await unregisterChannel(id);
     
-            await interaction.reply({ content: 'un-registered <#' + id + '> for cloning', ephemeral: false });
+            await interaction.reply({ content: 'un-registered <#' + id + '> for cloning', ephemeral: true });
         } catch (err) {
             console.log(`Error in /unregister: ${err}`);
         }

@@ -1,6 +1,6 @@
 const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { getOwnedChannel } = require("../dal/databaseApi");
+const { getOwnedChannel, deleteClone } = require("../dal/databaseApi");
 const logActivity = require("../logic/logActivity");
 const allowedPermissions = require("../logic/permissionsLogic");
 
@@ -16,7 +16,17 @@ module.exports = {
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
     
             if (ownedChannel) {
-                const channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                let channel;
+
+                try {
+                    channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                } catch (nochannel) {
+                    if (nochannel.message === "Unknown Channel")
+                        await deleteClone(ownedChannel.id);
+                        
+                    await interaction.reply({ content: `You do not own a voice chat. Join a clonable voice chat to claim it`, ephemeral: true });
+                }
+
                 const perms = allowedPermissions(ownedChannel.permissions, interaction.guild.roles.everyone.id);
 
                 channel.permissionOverwrites.cache.each(async perm => {

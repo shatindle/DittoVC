@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { getOwnedChannel } = require("../dal/databaseApi");
+const { getOwnedChannel, deleteClone } = require("../dal/databaseApi");
 const logActivity = require("../logic/logActivity");
 
 module.exports = {
@@ -29,7 +29,16 @@ module.exports = {
                     return;
                 }
 
-                const channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                let channel;
+
+                try {
+                    channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                } catch (nochannel) {
+                    if (nochannel.message === "Unknown Channel")
+                        await deleteClone(ownedChannel.id);
+                        
+                    await interaction.reply({ content: `You do not own a voice chat. Join a clonable voice chat to claim it`, ephemeral: true });
+                }
 
                 channel.setUserLimit(limit);
                 

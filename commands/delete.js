@@ -14,7 +14,16 @@ module.exports = {
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
     
             if (ownedChannel) {
-                const channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                let channel;
+
+                try {
+                    channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                } catch (nochannel) {
+                    if (nochannel.message === "Unknown Channel")
+                        await deleteClone(ownedChannel.id);
+                        
+                    await interaction.reply({ content: `You do not own a voice chat. Join a clonable voice chat to claim it`, ephemeral: true });
+                }
     
                 await channel.delete();
                 await deleteClone(ownedChannel.id);
