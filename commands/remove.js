@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { getOwnedChannel } = require("../dal/databaseApi");
+const { getOwnedChannel, deleteClone } = require("../dal/databaseApi");
 const isModWithAccess = require("../logic/modCheckLogic");
 const logActivity = require("../logic/logActivity");
 
@@ -22,7 +22,17 @@ module.exports = {
             if (invitedUser.bot) {
                 await interaction.reply({ content: `Bots cannot be removed from voice chat`, ephemeral: true });
             } else if (ownedChannel) {
-                const channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                let channel;
+
+                try {
+                    channel = await interaction.guild.channels.fetch(ownedChannel.id);
+                } catch (nochannel) {
+                    if (nochannel.message === "Unknown Channel")
+                        await deleteClone(ownedChannel.id);
+                        
+                    await interaction.reply({ content: `You do not own a voice chat. Join a clonable voice chat to claim it`, ephemeral: true });
+                    return;
+                }
 
                 // make sure this user isn't already a mod with access
                 if (isModWithAccess(channel, invitedUser.id)) {

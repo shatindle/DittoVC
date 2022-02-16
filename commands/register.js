@@ -25,7 +25,10 @@ module.exports = {
                 .setDescription("Sets the channel to start as public or private.  Defaults to private."))
         .addRoleOption(option => 
             option.setName("publicpermissions")
-                .setDescription("Treat this role as the max permissions allowed for public VCs")),
+                .setDescription("Treat this role as the max permissions allowed for public VCs"))
+        .addBooleanOption(option =>
+            option.setName("rename")
+                .setDescription("Whether or not to allow users to rename the voice channel")),
 	async execute(interaction) {
         try {
             await logActivity(interaction.client, interaction.guild.id, "Mod registered clone VC", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
@@ -51,6 +54,7 @@ module.exports = {
             let privateRole = interaction.options.getRole("permissions");
             let publicRole = interaction.options.getRole("publicpermissions");
             const ispublic = interaction.options.getBoolean("ispublic") === true;
+            const rename = interaction.options.getBoolean("rename") === true;
 
             if (!privateRole)
                 privateRole = interaction.guild.roles.everyone;
@@ -73,7 +77,8 @@ module.exports = {
                 instructions ? instructions.id : null, 
                 privateRole.id,
                 publicRole.id,
-                ispublic);
+                ispublic,
+                rename);
     
             let content = 
 `Registered <#${id}> for cloning.
@@ -83,8 +88,11 @@ The "${publicRole.name.replace("@", "")}" role will be the upper limit for permi
     
             if (instructions)
                 content += `\nUsers will be notified in <#${instructions.id}> of what to do.`;
+
+            if (rename)
+                content += `\n**Users will be allowed to rename this channel.** A default blacklist will be applied. Consider adding to the \`/blacklist\`.`;
     
-            await interaction.reply({ content, ephemeral: false });
+            await interaction.reply({ content, ephemeral: true });
         } catch (err) {
             console.log(`Error in /register: ${err}`);
         }

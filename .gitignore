@@ -107,3 +107,4 @@ dist
 config.json
 firebase.json
 config.debug.json
+config.prod.json

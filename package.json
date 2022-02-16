@@ -27,6 +27,7 @@
     "@discordjs/rest": "^0.3.0",
     "@discordjs/voice": "^0.8.0",
     "@google-cloud/firestore": "^5.0.2",
+    "bad-words": "^3.0.4",
     "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0"

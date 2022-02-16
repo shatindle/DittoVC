@@ -22,6 +22,13 @@ module.exports = {
                     await interaction.reply({ content: '<#' + target.id + '> is not a text channel.  Please specify a text channel, then try again', ephemeral: true });
                     return;
                 }
+
+                const currentPermissions = channel.permissionsFor(interaction.member.user.id);
+
+                if (!currentPermissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+                    await interaction.reply({ content: "You need the MANAGE_CHANNELS permission to run this command", ephemeral: true });
+                    return;
+                }
     
                 const canSendMessages = await channel.permissionsFor(interaction.client.user.id).has(Permissions.FLAGS.SEND_MESSAGES);
     
