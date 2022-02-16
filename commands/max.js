@@ -38,6 +38,7 @@ module.exports = {
                         await deleteClone(ownedChannel.id);
                         
                     await interaction.reply({ content: `You do not own a voice chat. Join a clonable voice chat to claim it`, ephemeral: true });
+                    return;
                 }
 
                 channel.setUserLimit(limit);
