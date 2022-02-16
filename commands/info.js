@@ -26,6 +26,9 @@ await interaction.reply({ content:
 /max limit:number
 > Set a max number of users. 0 removes the limit. Still respects if the channel is public or private.
 
+/name it:text
+> Give your voice chat a name.
+
 /delete
 > Delete your owned voice chat.
 
