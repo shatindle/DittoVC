@@ -26,6 +26,12 @@ Basically:
 /max limit:number
 - Set a max number of users. 0 removes the limit. Still respects if the channel is public or private.
 
+/name it:text
+- Give your voice chat a name.
+
+/claim
+- Take over ownership of a channel after the owner has left.
+
 /delete
 - Delete your owned voice chat.
 
@@ -33,8 +39,8 @@ Basically:
 - Display this help message.
 
 ## Mod Commands
-/register vc:voice-channel info:text-channel permissions:role name:text
-- Register a voice channel for cloning. Info and permissions are optional. Use info to specify a text channel where instructions will be sent to the user creating a voice chat. Use permissions to specify a role to control the maximum permissions a user is allowed to have. For instance, if you do not want to allow streaming in your server, make a role that restricts streaming permissions on the channel, then register the voice channel specifying permissions:@YourRole. Streaming would then be restricted on that voice channel for everyone, including the owner. Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number.
+/register vc:voice-channel info:text-channel permissions:role publicpermissions:role ispublic:boolean name:text
+- Register a voice channel for cloning. Info and permissions are optional. Use info to specify a text channel where instructions will be sent to the user creating a voice chat. Use permissions to specify a role to control the maximum permissions a user is allowed to have. For instance, if you do not want to allow streaming in your server, make a role that restricts streaming permissions on the channel, then register the voice channel specifying permissions:@YourRole. Streaming would then be restricted on that voice channel for everyone, including the owner. Use ispublic to start a voice chat as public. Defaults to private. Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number. 
 
 /unregister vc:voice-channel
 - Unregister a voice channel for cloning.

@@ -29,6 +29,9 @@ await interaction.reply({ content:
 /name it:text
 > Give your voice chat a name.
 
+/claim
+> Take over ownership of a channel after the owner has left.
+
 /delete
 > Delete your owned voice chat.
 
@@ -42,6 +45,7 @@ __Mod Commands__
 `Use permissions to specify a role to control the maximum permissions a user is allowed to have. ` + 
 `For instance, if you do not want to allow streaming in your server, make a role that restricts streaming permissions on the channel, ` +
 `then register the voice channel specifying permissions:@YourRole. Streaming would then be restricted on that voice channel for everyone, including the owner. ` +
+`Use ispublic to start a voice chat as public. Defaults to private. ` +
 `Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number.
 
 /unregister vc:voice-channel
