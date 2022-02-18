@@ -30,6 +30,9 @@ const CHANNELS_COLLECTION = "channels";
  * @param {String} guildId The server ID the channel is associated with (does not change, used to mass delete)
  */
 async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", publicRoleId = "", defaultPublic = false, rename = false) {
+    if (checkCache(id, "id", channels))
+        removeFromCache(id, "id", channels);
+    
     var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
     await ref.set({
         id,
@@ -336,6 +339,22 @@ async function getClone(id) {
     return null;
 }
 
+async function setChannelOwner(id, owner) {
+    const channel = await getClone(id);
+
+    if (channel) {
+        channel.owner = owner;
+
+        await db.collection(CLONES_COLLECTION).doc(id).update({
+            owner
+        });
+
+        return;
+    }
+
+    throw "Channel doesn't exist";
+}
+
 async function getOwnedChannel(owner, guildId) {
     let channel = checkCache(owner, "owner", clones);
 
@@ -509,6 +528,7 @@ module.exports = {
     
     getOwnedChannel,
     nameOwnedChannel,
+    setChannelOwner,
 
     registerLogs,
     loadAllLogChannels,

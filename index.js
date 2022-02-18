@@ -270,6 +270,9 @@ __How to use DittoVC__
 /name it:text
 > Give your voice chat a name.
 
+/claim
+> Take over ownership of a channel after the owner has left.
+
 /delete
 > Delete your owned voice chat.`);
 
