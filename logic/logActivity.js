@@ -5,9 +5,12 @@ async function logActivity(client, guildId, action, activity) {
     try {
         const logChannel = getLogChannel(guildId);
 
+        if (!logChannel)
+            return;
+            
         let channel = client.channels.cache.get(logChannel);
 
-        if (!channel)
+        if (!channel || !channel.send)
             channel = client.channels.fetch(logChannel);
 
         const message = new MessageEmbed()
