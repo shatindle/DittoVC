@@ -394,7 +394,7 @@ async function nameOwnedChannel(id, name) {
     throw "Channel doesn't exist";
 }
 
-const logs = [];
+const logs = {};
 const LOGS_COLLECTION = "logs";
 
 /**
@@ -419,10 +419,10 @@ const LOGS_COLLECTION = "logs";
         }
     }
 
-    addToCache({
+    logs[guildId] = {
         id: guildId,
         channelId
-    }, logs, 0);
+    };
 }
 
 async function loadAllLogChannels() {
