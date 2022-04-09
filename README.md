@@ -14,6 +14,10 @@ Basically:
 - user issues command to invite or make it public
 - when all have left, bot deletes the vc
 
+## Video Demonstration
+
+https://user-images.githubusercontent.com/3068117/162594640-a34de634-cb75-4e42-8954-94fb9ac2bf7e.mp4
+
 ## Channel Owner Commands
 /add user:username#0000 permissions:(All, Speak, or Listen)
 - Adds the user to the voice chat, defaults to all allowed permissions.
