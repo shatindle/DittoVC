@@ -35,6 +35,9 @@ await interaction.reply({ content:
 /delete
 > Delete your owned voice chat.
 
+/region
+> Sets the region the voice chat is hosted in.
+
 /info
 > Display this help message.
 

@@ -43,6 +43,9 @@ https://user-images.githubusercontent.com/3068117/162594640-a34de634-cb75-4e42-8
 /delete
 - Delete your owned voice chat.
 
+/region
+- Sets the region the voice chat is hosted in.
+
 /info
 - Display this help message.
 

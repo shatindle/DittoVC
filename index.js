@@ -274,7 +274,10 @@ __How to use DittoVC__
 > Take over ownership of a channel after the owner has left.
 
 /delete
-> Delete your owned voice chat.`);
+> Delete your owned voice chat.
+
+/region
+> Sets the region the voice chat is hosted in.`);
 
                     setTimeout(async function() {
                         try {
