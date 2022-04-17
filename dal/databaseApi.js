@@ -1,8 +1,9 @@
 const Firestore = require('@google-cloud/firestore');
 const { addToCache, removeFromCache, checkCache } = require("./cacheApi");
+const { projectId } = require("../firebase.json").project_id;
 
 const db = new Firestore({
-    projectId: 'dittovc',
+    projectId: projectId,
     keyFilename: './firebase.json',
 });
 

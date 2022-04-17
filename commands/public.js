@@ -44,11 +44,15 @@ module.exports = {
                             speakPerms = perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1 && allowed.has(Permissions.FLAGS.SPEAK);
                         }
 
-                        await channel.permissionOverwrites.create(perm.id, {
-                            CONNECT: true,
-                            STREAM: streamPerms,
-                            SPEAK: speakPerms
-                        });
+                        try {
+                            await channel.permissionOverwrites.create(perm.id, {
+                                CONNECT: true,
+                                STREAM: streamPerms,
+                                SPEAK: speakPerms
+                            });
+                        } catch (edit_err) {
+                            console.log(`Unable to alter channel for this user, keep going... Error: ${edit_err}`);
+                        }
 
                         if (!streamPerms) {
                             // if the user is streaming, disconnect them

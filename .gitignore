@@ -108,3 +108,5 @@ config.json
 firebase.json
 config.debug.json
 config.prod.json
+firebase.debug.json
+firebase.prod.json
