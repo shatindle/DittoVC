@@ -27,20 +27,22 @@ module.exports = {
             option.setName("country")
                 .setDescription("Where you want the voice chat to be hosted")
                 .setRequired(true)
-                .addChoice("Automatic", "Automatic")
-                .addChoice("Brazil", "Brazil")
-                .addChoice("Hong Kong", "Hong Kong")
-                .addChoice("India", "India")
-                .addChoice("Japan", "Japan")
-                .addChoice("Rotterdam", "Rotterdam")
-                .addChoice("Russia", "Russia")
-                .addChoice("Singapore", "Singapore")
-                .addChoice("South Africa", "South Africa")
-                .addChoice("Sydney", "Sydney")
-                .addChoice("US Central", "US Central")
-                .addChoice("US East", "US East")
-                .addChoice("US South", "US South")
-                .addChoice("US West", "US West")),
+                .addChoices(
+                    { name: "Automatic", value: "Automatic" },
+                    { name: "Brazil", value: "Brazil" },
+                    { name: "Hong Kong", value: "Hong Kong" },
+                    { name: "India", value: "India" },
+                    { name: "Japan", value: "Japan" },
+                    { name: "Rotterdam", value: "Rotterdam" },
+                    { name: "Russia", value: "Russia" },
+                    { name: "Singapore", value: "Singapore" },
+                    { name: "South Africa", value: "South Africa" },
+                    { name: "Sydney", value: "Sydney" },
+                    { name: "US Central", value: "US Central" },
+                    { name: "US East", value: "US East" },
+                    { name: "US South", value: "US South" },
+                    { name: "US West", value: "US West" },
+                )),
 	async execute(interaction) {
         try {
             await logActivity(interaction.client, interaction.guild.id, "VC region changed", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);

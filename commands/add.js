@@ -16,9 +16,11 @@ module.exports = {
         .addStringOption(option => 
             option.setName("permissions")
                 .setDescription("Permissions you would like to give the user")
-                .addChoice("All", "all")
-                .addChoice("Speak", "speak")
-                .addChoice("Listen", "listen")),
+                .addChoices(
+                    { name: "All", value: "all" },
+                    { name: "Speak", value: "speak" },
+                    { name: "Listen", value: "listen" }
+                )),
 	async execute(interaction) {
         try {
             await logActivity(interaction.client, interaction.guild.id, "User added to VC", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
