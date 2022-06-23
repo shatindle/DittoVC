@@ -162,32 +162,37 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 await claim.permissionOverwrites.create(client.user.id, {
                     CONNECT: true,
                     STREAM: true,
-                    SPEAK: true
+                    SPEAK: true,
+                    SEND_MESSAGES: true
                 });
 
                 if (channelStartsPublic) {
                     await claim.permissionOverwrites.create(userId, {
                         CONNECT: true,
                         STREAM: publicPermissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
-                        SPEAK: publicPermissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                        SPEAK: publicPermissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
+                        SEND_MESSAGES: publicPermissions.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1
                     });
 
                     await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
                         CONNECT: true,
                         STREAM: publicPermissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
-                        SPEAK: publicPermissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                        SPEAK: publicPermissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
+                        SEND_MESSAGES: publicPermissions.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1
                     });
                 } else {
                     await claim.permissionOverwrites.create(userId, {
                         CONNECT: true,
                         STREAM: permissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
-                        SPEAK: permissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                        SPEAK: permissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
+                        SEND_MESSAGES: permissions.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1
                     });
                     
                     await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
                         CONNECT: false,
                         STREAM: false,
-                        SPEAK: false
+                        SPEAK: false,
+                        SEND_MESSAGES: false
                     });
                 }
 

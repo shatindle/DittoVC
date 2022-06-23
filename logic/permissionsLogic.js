@@ -18,6 +18,15 @@ function getPermissions(channelOrArray, roleId, request) {
     else
         limitPermissions.push(Permissions.FLAGS.STREAM);
 
+    const messagePermissions = channelOrArray.allow ? 
+        channelOrArray.allow.map(t => t === 2048 || t === 2048n ? "SEND_MESSAGES" : "NONE") :
+        channelOrArray.permissionsFor(roleId ?? channel.guild.roles.everyone.id).toArray();
+
+    if (messagePermissions.indexOf("SEND_MESSAGES") > -1) 
+        maxPermissions.push(Permissions.FLAGS.SEND_MESSAGES);
+    else
+        limitPermissions.push(Permissions.FLAGS.SEND_MESSAGES);
+
     return {
         allow: maxPermissions,
         deny: limitPermissions

@@ -33,22 +33,25 @@ module.exports = {
                 channel.permissionOverwrites.cache.each(async perm => {
                     if (perm.id !== interaction.client.user.id && perm.type === "member") {
                         let allowed = new Permissions(perm.allow);
-                        let streamPerms, speakPerms;
+                        let streamPerms, speakPerms, sendMessagePerms;
 
                         if (ownedChannel.owner === perm.id) {
                             // this is the owner, they get full perms allowed
                             streamPerms = perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1;
                             speakPerms = perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1;
+                            sendMessagePerms = perms.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1;
                         } else {
                             streamPerms = perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1 && allowed.has(Permissions.FLAGS.STREAM);
                             speakPerms = perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1 && allowed.has(Permissions.FLAGS.SPEAK);
+                            sendMessagePerms = perms.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1 && allowed.has(Permissions.FLAGS.SEND_MESSAGES);
                         }
 
                         try {
                             await channel.permissionOverwrites.create(perm.id, {
                                 CONNECT: true,
                                 STREAM: streamPerms,
-                                SPEAK: speakPerms
+                                SPEAK: speakPerms,
+                                SEND_MESSAGES: sendMessagePerms
                             });
                         } catch (edit_err) {
                             console.log(`Unable to alter channel for this user, keep going... Error: ${edit_err}`);
@@ -68,7 +71,8 @@ module.exports = {
                 await channel.permissionOverwrites.create(interaction.guild.roles.everyone.id, {
                     CONNECT: true,
                     STREAM: perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
-                    SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                    SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
+                    SEND_MESSAGES: perms.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1
                 });
                 
                 await interaction.reply({ content: `everyone can now join <#${ownedChannel.id}>`, ephemeral: true });
