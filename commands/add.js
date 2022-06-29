@@ -19,6 +19,7 @@ module.exports = {
                 .addChoices(
                     { name: "All", value: "all" },
                     { name: "Speak", value: "speak" },
+                    { name: "Text", value: "send_messages" },
                     { name: "Listen", value: "listen" }
                 )),
 	async execute(interaction) {
@@ -59,7 +60,8 @@ module.exports = {
                 await channel.permissionOverwrites.create(invitedUser.id, {
                     CONNECT: true,
                     STREAM: perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
-                    SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1
+                    SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
+                    SEND_MESSAGES: perms.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1
                 });
                 
                 await interaction.reply({ content: `<@${invitedUser.id}> can now join <#${ownedChannel.id}>` });

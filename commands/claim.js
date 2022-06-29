@@ -54,19 +54,22 @@ module.exports = {
                 claim = await interaction.client.channels.fetch(clone.id);
 
                 let streamPerms = false, 
-                    speakPerms = false;
+                    speakPerms = false,
+                    sendMessagesPerms = false;
 
                 claim.permissionOverwrites.cache.each(async perm => {
                     if (perm.id === originalOwnerUserId) {
                         streamPerms = perm.allow.has(Permissions.FLAGS.STREAM);
                         speakPerms = perm.allow.has(Permissions.FLAGS.SPEAK);
+                        sendMessagesPerms = perm.allow.has(Permissions.FLAGS.SEND_MESSAGES);
                     }
                 });
 
                 await claim.permissionOverwrites.create(userId, {
                     CONNECT: true,
                     STREAM: streamPerms,
-                    SPEAK: speakPerms
+                    SPEAK: speakPerms,
+                    SEND_MESSAGES: sendMessagesPerms
                 });
 
                 // the prior owner can keep their current rights in case they come back

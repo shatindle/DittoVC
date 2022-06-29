@@ -42,7 +42,8 @@ module.exports = {
                 }
     
                 await channel.permissionOverwrites.create(invitedUser.id, {
-                    CONNECT: false
+                    CONNECT: false,
+                    SEND_MESSAGES: false
                 });
                 
                 const member = await interaction.guild.members.fetch(invitedUser.id);
