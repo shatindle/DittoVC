@@ -1,15 +1,24 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const logActivity = require('../logic/logActivity');
+const { getLocalizations, getLang } = require("../lang");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('info')
-		.setDescription('Get info about this bot, including mod commands'),
+        .setNameLocalizations(getLocalizations("command_info", "info"))
+		.setDescription('Get info about this bot, including mod commands')
+        .setDescriptionLocalizations(getLocalizations("command_info_description", "Get info about this bot, including mod commands")),
 	async execute(interaction) {
         try {
-            await logActivity(interaction.client, interaction.guild.id, "User requested help", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+            const lang = interaction.guild.preferredLocale;
+            
+            await logActivity(interaction.client, 
+                interaction.guild.id, 
+                getLang(lang, "command_info_log_name", "User requested help"), 
+                getLang(lang, "command_user_used", "<@%1$s> used:\n %2$s", interaction.user.id, interaction.toString()));
 
-await interaction.reply({ content: 
+            await interaction.reply({ 
+                content: getLang(lang, "command_info_how_to_use_dittovc", 
 `__How to use DittoVC__
 /add user:username#0000 permissions:(All, Speak, or Listen)
 > Adds the user to the voice chat, defaults to all allowed permissions.
@@ -55,7 +64,9 @@ __Mod Commands__
 > Unregister a voice channel for cloning.
 
 /log to:text-channel
-> Log all commands, creations, joins, and leaves for this server to a channel.`, ephemeral: true });
+> Log all commands, creations, joins, and leaves for this server to a channel.`), 
+                ephemeral: true 
+            });
         } catch (err) {
             console.log(`Error in /info: ${err}`);
         }

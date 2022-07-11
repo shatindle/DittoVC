@@ -3,14 +3,22 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getOwnedChannel, deleteClone } = require("../dal/databaseApi");
 const logActivity = require("../logic/logActivity");
 const allowedPermissions = require("../logic/permissionsLogic");
+const { getLocalizations, getLang } = require("../lang");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('private')
-		.setDescription('Make this channel private'),
+        .setNameLocalizations(getLocalizations("command_private", "private"))
+		.setDescription('Make this channel private')
+        .setDescriptionLocalizations(getLocalizations("command_private_description", "Make this channel private")),
 	async execute(interaction) {
         try {
-            await logActivity(interaction.client, interaction.guild.id, "User made VC private", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+            const lang = interaction.guild.preferredLocale;
+            
+            await logActivity(interaction.client, 
+                interaction.guild.id, 
+                getLang(lang, "command_private_log_name", "User made VC private"),
+                getLang(lang, "command_user_used", "<@%1$s> used:\n %2$s", interaction.user.id, interaction.toString()));
 
             const guildId = interaction.guild.id;
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
@@ -24,7 +32,10 @@ module.exports = {
                     if (nochannel.message === "Unknown Channel")
                         await deleteClone(ownedChannel.id);
                         
-                    await interaction.reply({ content: `You do not own a voice chat. Join a clonable voice chat to claim it`, ephemeral: true });
+                    await interaction.reply({ 
+                        content: getLang(lang, "command_you_dont_own_vc", "You do not own a voice chat. Join a clonable voice chat to claim it"),
+                        ephemeral: true 
+                    });
                     return;
                 }
 
@@ -75,9 +86,15 @@ module.exports = {
                     SEND_MESSAGES: false
                 });
                 
-                await interaction.reply({ content: `Only members you invite can join <#${ownedChannel.id}>`, ephemeral: true });
+                await interaction.reply({ 
+                    content: getLang(lang, "command_private_only_members_can_join", "Only members you invite can join <#%1$s>", ownedChannel.id), 
+                    ephemeral: true 
+                });
             } else {
-                await interaction.reply({ content: `You do not own a voice chat. Join a clonable voice chat to claim it`, ephemeral: true });
+                await interaction.reply({ 
+                    content: getLang(lang, "command_you_dont_own_vc", "You do not own a voice chat. Join a clonable voice chat to claim it"),
+                    ephemeral: true 
+                });
             }
         } catch (err) {
             console.log(`Error in /private: ${err}`);

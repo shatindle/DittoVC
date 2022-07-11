@@ -21,6 +21,15 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\server-check.js"
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Check Localizations",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\testLocalizations.js"
         }
     ]
 }

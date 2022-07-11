@@ -2,14 +2,22 @@ const { Permissions } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getClone, getOwnedChannel, setChannelOwner } = require("../dal/databaseApi");
 const logActivity = require("../logic/logActivity");
+const { getLocalizations, getLang } = require("../lang");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('claim')
-		.setDescription('If the owner has left the voice chat, use this command to take control of the channel'),
+        .setNameLocalizations(getLocalizations("command_claim", "claim"))
+		.setDescription('If the owner has left the voice chat, use this command to take control of the channel')
+        .setDescriptionLocalizations(getLocalizations("command_claim_description", "If the owner has left the voice chat, use this command to take control of the channel")),
 	async execute(interaction) {
         try {
-            await logActivity(interaction.client, interaction.guild.id, "User tried to claim a VC", `<@${interaction.user.id}> used:\n ${interaction.toString()}`);
+            const lang = interaction.guild.preferredLocale;
+            
+            await logActivity(interaction.client, 
+                interaction.guild.id, 
+                getLang(lang, "command_claim_log_name", "User tried to claim a VC"), 
+                getLang(lang, "command_user_used", "<@%1$s> used:\n %2$s", interaction.user.id, interaction.toString()));
 
             const guildId = interaction.guild.id;
             const userId = interaction.member.user.id;
@@ -20,7 +28,10 @@ module.exports = {
 
                 if (clone.owner === userId) {
                     // you are the owner
-                    await interaction.reply({ content: `You already own this channel`, ephemeral: true });
+                    await interaction.reply({ 
+                        content: getLang(lang, "command_claim_already_own_channel", "You already own this channel"), 
+                        ephemeral: true 
+                    });
                     return;
                 }
 
@@ -30,7 +41,10 @@ module.exports = {
                 if (originalOwner && originalOwner.voice && originalOwner.voice.channel) {
                     if (clone.id === originalOwner.voice.channel.id) {
                         // the owner is still connected
-                        await interaction.reply({ content: `The owner is still in the channel. You cannot claim it`, ephemeral: true });
+                        await interaction.reply({ 
+                            content: getLang(lang, "command_claim_owner_still_in_channel", "The owner is still in the channel. You cannot claim it"), 
+                            ephemeral: true 
+                        });
                         return;
                     }
 
@@ -73,9 +87,15 @@ module.exports = {
                 });
 
                 // the prior owner can keep their current rights in case they come back
-                await interaction.reply({ content: `You are now the owner of this channel`, ephemeral: true });
+                await interaction.reply({ 
+                    content: getLang(lang, "command_claim_you_are_now_owner", "You are now the owner of this channel"), 
+                    ephemeral: true 
+                });
             } else {
-                await interaction.reply({ content: `You must be in a user owned voice chat the owner has left to claim it`, ephemeral: true });
+                await interaction.reply({ 
+                    content: getLang(lang, "command_claim_you_must_be_in_voice_chat", "You must be in a user owned voice chat the owner has left to claim it"), 
+                    ephemeral: true 
+                });
             }
         } catch (err) {
             console.log(`Error in /private: ${err}`);

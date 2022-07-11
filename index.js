@@ -23,6 +23,7 @@ const {
     expireCooldowns
 } = require("./dal/cooldownApi");
 const logActivity = require('./logic/logActivity');
+const { getLang } = require("./lang");
 
 const client = new Client({ 
     intents: [
@@ -73,6 +74,7 @@ const currentClaims = {};
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
     try {
+        const lang = newState.guild.preferredLocale;
         const { channelId: leftChannelId, guild, member } = oldState;
         let { channelId: joinedChannelId, id: userId } = newState;
 
@@ -96,7 +98,10 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 }
             }
 
-            await logActivity(client, guild.id, "User left VC", `<@${userId}> left ${channelName}`);
+            await logActivity(client, 
+                guild.id, 
+                getLang(lang, "voicestateupdate_user_left_log_name", "User left VC"), 
+                getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s", userId, channelName));
         }
 
         if (joinedChannelId) {
@@ -121,7 +126,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                             instructionsChannel = await client.channels.fetch(instructionsId);
                         
                         var response = await instructionsChannel.send(
-                            `<@${userId}> please wait a few minutes before trying to create a new voice chat`);
+                            getLang(lang, "voicestateupdate_rate_limited", "<@%1$s> please wait a few minutes before trying to create a new voice chat", userId));
 
                         setTimeout(async function() {
                             if (response.deletable)
@@ -131,7 +136,10 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                     await bootMember.voice.disconnect();
 
-                    await logActivity(client, guild.id, "Join cooldown in effect", `<@${userId}> tried to create a VC, but hit cooldown`);
+                    await logActivity(client, 
+                        guild.id, 
+                        getLang(lang, "voicestateupdate_rate_limited_log_name", "Join cooldown in effect"),
+                        getLang(lang, "voicestateupdate_rate_limited_log_description", "<@%1$s> tried to create a VC, but hit cooldown", userId));
                     return;
                 }
 
@@ -243,7 +251,10 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await clone.edit({ position: newState.channel.position });
                 }
 
-                await logActivity(client, guild.id, "User created VC", `<@${userId}> created ${newName}`);
+                await logActivity(client, 
+                    guild.id, 
+                    getLang(lang, "voicestateupdate_user_created_vc_log_name", "User created VC"), 
+                    getLang(lang, "voicestateupdate_user_created_vc_log_description", "<@%1$s> created %2$s", userId, newName));
 
                 if (instructionsId) {
                     var instructionsChannel = client.channels.cache.get(instructionsId);
@@ -252,7 +263,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                         instructionsChannel = await client.channels.fetch(instructionsId);
 
                     const tempInstructions = await instructionsChannel.send(
-`<@${userId}>
+                        getLang(lang, "voicestateupdate_how_to_use_dittovc",
+`<@%1$s>
 __How to use DittoVC__
 /info
 > See the detailed help message.
@@ -282,7 +294,7 @@ __How to use DittoVC__
 > Delete your owned voice chat.
 
 /region
-> Sets the region the voice chat is hosted in.`);
+> Sets the region the voice chat is hosted in.`, userId));
 
                     setTimeout(async function() {
                         try {
@@ -292,7 +304,10 @@ __How to use DittoVC__
                     }, 60000);
                 }
             } else {
-                await logActivity(client, guild.id, "User joined VC", `<@${userId}> joined ${claim.name}`);
+                await logActivity(client, 
+                    guild.id, 
+                    getLang(lang, "voicestateupdate_user_joined_vc_log_name", "User joined VC"), 
+                    getLang(lang, "voicestateupdate_user_joined_vc_log_description", "<@%1$s> joined %2$s", userId, claim.name));
             }
         }
     } catch (err) {
@@ -301,6 +316,7 @@ __How to use DittoVC__
 });
 
 client.on('interactionCreate', async interaction => {
+    const lang = interaction.guild.preferredLocale;
 	if (!interaction.isCommand()) return;
 
 	const command = client.commands.get(interaction.commandName);
@@ -311,10 +327,14 @@ client.on('interactionCreate', async interaction => {
 		await command.execute(interaction);
 	} catch (error) {
 		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		await interaction.reply({ 
+            content: 
+            getLang(lang, "generic_error", "There was an error while executing this command!"), 
+            ephemeral: true 
+        });
 	}
 });
 
 client.login(token);
 
-const expireTimer = setInterval(expireCooldowns, COOL_DOWN / 2);
+setInterval(expireCooldowns, COOL_DOWN / 2);
