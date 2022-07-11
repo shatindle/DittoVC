@@ -1,7 +1,5 @@
 const { language:enUS } = require("./en-US");
 
-const strict = true;
-
 /**
  * @description The first parameter should be the key, the second should be the defaultText.  All other parameters are ignored for this function.
  * @returns The localization file for a given set of keys
@@ -23,8 +21,6 @@ function getLang(lang) {
         case "en-US": return enUS.apply(null, args);
         // TODO: add more languages here
     }
-
-    if (strict) throw `Lang text missing for ${lang}`
 
     return enUS.apply(null, args);
 }
