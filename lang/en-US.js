@@ -283,7 +283,7 @@ __How to use DittoVC__
     "command_menu_param_channel": "channel",
     "command_menu_param_channel_description": "The channel to make the command menu in",
     "command_menu_log_name": "Mod created control menu",
-    "command_menu_click_here_to_control": "Once you've created a voice chat, use this menu to control it! More commands are available via slash commands. Do `/info` to learn more.",
+    "command_menu_click_here_to_control": "Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more.",
 
     "command_private_button_click": "Clicked button 'private'",
     "command_public_button_click": "Clicked button 'public'",
@@ -295,7 +295,9 @@ __How to use DittoVC__
 
     "command_max_modalsubmit_log_name": "User submitted max modal",
     "command_max_modalsubmit_description": "Submitted max modal",
-    "command_max_modal_response_not_numbers": "The limit must be a number from 0 to 99"
+    "command_max_modal_response_not_numbers": "The limit must be a number from 0 to 99",
+
+    "command_menu_success": "Menu successfully created!"
 
 };
 

@@ -267,7 +267,7 @@ __Cách sử dụng bot tạo phòng riêng__
     "command_menu_param_channel": "channel",
     "command_menu_param_channel_description": "Kênh để tạo menu lệnh trong",
     "command_menu_log_name": "Người điều hành đã tạo menu điều khiển",
-    "command_menu_click_here_to_control": "Khi bạn đã tạo cuộc trò chuyện thoại, hãy sử dụng menu này để điều khiển nó! Có nhiều lệnh hơn thông qua các lệnh gạch chéo. Làm `/info` để tìm hiểu thêm.",
+    "command_menu_click_here_to_control": "Tham gia một cuộc trò chuyện thoại mới, sau đó sử dụng menu này để điều khiển nó! Có nhiều lệnh hơn thông qua các lệnh gạch chéo. Làm /info để tìm hiểu thêm.",
 
     "command_private_button_click": "Đã nhấp vào nút 'private'",
     "command_public_button_click": "Đã nhấp vào nút 'public'",
@@ -279,7 +279,9 @@ __Cách sử dụng bot tạo phòng riêng__
 
     "command_max_modalsubmit_log_name": "Người dùng đã gửi phương thức 'max'",
     "command_max_modalsubmit_description": "Đã gửi phương thức tối đa",
-    "command_max_modal_response_not_numbers": "Giới hạn phải là một số từ 0 đến 99"
+    "command_max_modal_response_not_numbers": "Giới hạn phải là một số từ 0 đến 99",
+
+    "command_menu_success": "Đã tạo menu thành công!"
 };
 
 // WARNING: DO NOT EDIT ANYTHING BELOW THIS LINE

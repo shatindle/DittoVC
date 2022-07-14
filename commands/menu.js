@@ -30,11 +30,29 @@ module.exports = {
 
             const channel = await interaction.guild.channels.fetch(id);
 
+            if (channel.type !== "GUILD_TEXT") {
+                await interaction.reply({ 
+                    content: getLang(lang, "command_log_not_a_text_channel", "<#%1$s> is not a text channel.  Please specify a text channel, then try again", target.id), 
+                    ephemeral: true 
+                });
+                return;
+            }
+
             const currentPermissions = channel.permissionsFor(interaction.member.user.id);
 
             if (!currentPermissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
                 await interaction.reply({ 
                     content: getLang(lang, "command_you_need_manage_channels_permission", "You need the MANAGE_CHANNELS permission to run this command"), 
+                    ephemeral: true 
+                });
+                return;
+            }
+
+            const canSendMessages = await channel.permissionsFor(interaction.client.user.id).has(Permissions.FLAGS.SEND_MESSAGES);
+
+            if (!canSendMessages) {
+                await interaction.reply({ 
+                    content: getLang(lang, "command_log_need_send_messages", "Please grant me SEND_MESSAGES in <#%1$s>, then try again", target.id), 
                     ephemeral: true 
                 });
                 return;
@@ -53,19 +71,20 @@ module.exports = {
                     new MessageButton()
                         .setCustomId("max")
                         .setLabel(getLang(lang, "command_max", "max"))
-                        .setStyle("DANGER"),
-                    // new MessageButton()
-                    //     .setCustomId("add")
-                    //     .setLabel(getLang(lang, "command_menu_button_add", "Add User")),
-                    // new MessageButton()
-                    //     .setCustomId("remove")
-                    //     .setLabel(getLang(lang, "command_menu_button_remove", "Remove User"))
+                        .setStyle("DANGER")
+
+                    // add user and remove user can't be done this way... yet...
                 );
 
-            await interaction.reply({ 
-                content: getLang(lang, "command_menu_click_here_to_control", "Once you've created a voice chat, use this menu to control it! More commands are available via slash commands. Do /info to learn more."), 
+            await channel.send({ 
+                content: getLang(lang, "command_menu_click_here_to_control", "Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more."), 
                 components: [row]
             });
+
+            await interaction.reply({
+                content: getLang(lang, "command_menu_success", "Menu successfully created!"),
+                ephemeral: true
+            })
         } catch (err) {
             console.log(`Error in /unregister: ${err}`);
         }
