@@ -1,4 +1,5 @@
 const { language:enUS } = require("./en-US");
+const { language:vi } = require("./vi");
 
 /**
  * @description The first parameter should be the key, the second should be the defaultText.  All other parameters are ignored for this function.
@@ -6,7 +7,8 @@ const { language:enUS } = require("./en-US");
  */
 function getLocalizations() {
     return {
-        "en-US": enUS.apply(null, arguments)
+        "en-US": enUS.apply(null, arguments),
+        "vi": vi.apply(null, arguments)
     };
 }
 
@@ -19,6 +21,7 @@ function getLang(lang) {
     const args = Array.prototype.slice.call(arguments).slice(1);
     switch (lang) {
         case "en-US": return enUS.apply(null, args);
+        case "vi": return vi.apply(null, args);
         // TODO: add more languages here
     }
 

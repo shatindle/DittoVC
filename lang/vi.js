@@ -13,166 +13,154 @@ const strict = true;
 /**
  * All of the following text is what needs to be translated to other locales.  en-US is done as an example.
  */
-const text = {
+ const text = {
     // interactions:
 
     // generic commands
-    "command_user_used": "<@%1$s> used:\n %2$s",
-    "command_you_need_manage_channels_permission": "You need the MANAGE_CHANNELS permission to run this command",
-    "command_you_dont_own_vc": "You do not own a voice chat. Join a clonable voice chat to claim it",
-    "generic_error": "There was an error while executing this command!",
+    "command_user_used": "<@%1$s> đã sử dụng:\n %2$s",
+    "command_you_need_manage_channels_permission": "Bạn cần quyền MANAGE_CHANNELS để chạy lệnh này",
+    "command_you_dont_own_vc": "Bạn không sở hữu một kênh thoại. Tham gia cuộc trò chuyện thoại có thể sao chép để yêu cầu nó",
+    "generic_error": "Đã xảy ra lỗi khi thực hiện lệnh này!",
 
     // /add
     "command_add": "add",
-    "command_add_description": "Give a user access to this channel",
-    "command_add_param_user": "user",
-    "command_add_param_user_description": "The user you would like to invite",
-    "command_add_param_permissions": "permissions",
-    "command_add_param_permissions_description": "Permissions you would like to give the user",
+    "command_add_description": "Cấp cho người dùng quyền truy cập vào kênh này",
+    "command_add_param_user": "người sử dụng",
+    "command_add_param_user_description": "Người dùng bạn muốn mời",
+    "command_add_param_permissions": "Quyền hạn",
+    "command_add_param_permissions_description": "Quyền bạn muốn cấp cho người dùng",
     "command_add_param_permissions_option_all": "All",
-    "command_add_param_permissions_option_speak": "Speak",
-    "command_add_param_permissions_option_text": "Text",
-    "command_add_param_permissions_option_listen": "Listen",
-    "command_add_log_name": "User added to VC",
-    "command_add_bot_error": "Bots cannot be invited to voice chat",
-    "command_add_already_have_access": "You already have access",
-    "command_add_mod_has_access": "This moderator already has access",
-    "command_add_user_can_join": "<@%1$s> can now join <#%2$s>",
+    "command_add_param_permissions_option_speak": "speak",
+    "command_add_param_permissions_option_text": "text",
+    "command_add_param_permissions_option_listen": "listen",
+    "command_add_log_name": "Người dùng đã được thêm vào VC",
+    "command_add_bot_error": "Không thể mời bot tham gia trò chuyện thoại",
+    "command_add_already_have_access": "Bạn đã có quyền truy cập",
+    "command_add_mod_has_access": "Người kiểm duyệt này đã có quyền truy cập",
+    "command_add_user_can_join": "<@%1$s> bây giờ có thể tham gia <#%2$s>",
 
     // /blacklist
     "command_blacklist": "blacklist",
-    "command_blacklist_description": "Manage the server blacklist. Note that a default blacklist will be applied",
+    "command_blacklist_description": "Quản lý danh sách đen máy chủ. Lưu ý rằng danh sách đen mặc định sẽ được áp dụng",
     "command_blacklist_param_add": "add",
-    "command_blacklist_param_add_description": "Add a word to the blacklist",
+    "command_blacklist_param_add_description": "Thêm một từ vào danh sách đen",
     "command_blacklist_param_add_param_word": "word",
-    "command_blacklist_param_add_param_word_description": "The word to add to the blacklist",
+    "command_blacklist_param_add_param_word_description": "Từ để thêm vào danh sách đen",
     "command_blacklist_param_remove": "remove",
-    "command_blacklist_param_remove_description": "Remove a word to the blacklist",
+    "command_blacklist_param_remove_description": "Xóa một từ vào danh sách đen",
     "command_blacklist_param_remove_param_word": "word",
-    "command_blacklist_param_remove_param_word_description": "The word to remove from the blacklist",
+    "command_blacklist_param_remove_param_word_description": "Từ để xóa khỏi danh sách đen",
     "command_blacklist_param_list": "list",
-    "command_blacklist_param_list_description": "Show your server's blacklist",
+    "command_blacklist_param_list_description": "Hiển thị danh sách đen của máy chủ của bạn",
     "command_blacklist_log_name": "Blacklist command",
-    "command_blacklist_limit_exceeded": "Blacklist limit exceeded: over %1$s records",
-    "command_blacklist_word_added_to_list": "\"%1$s\" added to the blacklist",
-    "command_blacklist_invalid_word": "Invalid word. Words must be greater than 1 character and less than 33 characters",
-    "command_blacklist_word_removed_from_list": "\"%1$s\" removed from the blacklist",
-    "command_blacklist_words_in_list": "**Words in your blacklist:** \n%1$s\n\n*More items are in the blacklist. See %2$s*",
-    "command_blacklist_unknown": "Unknown blacklist command",
+    "command_blacklist_limit_exceeded": "Đã vượt quá giới hạn danh sách đen: kết thúc %1$s Hồ sơ",
+    "command_blacklist_word_added_to_list": "\"%1$s\" được thêm vào danh sách đen",
+    "command_blacklist_invalid_word": "Từ không hợp lệ. Các từ phải lớn hơn 1 ký tự và ít hơn 33 ký tự",
+    "command_blacklist_word_removed_from_list": "\"%1$s\" bị xóa khỏi danh sách đen",
+    "command_blacklist_words_in_list": "**Các từ trong danh sách đen của bạn:** \n%1$s\n\n*Nhiều mặt hàng nằm trong danh sách đen. Nhìn thấy %2$s*",
+    "command_blacklist_unknown": "Lệnh danh sách đen không xác định",
 
     // /claim
     "command_claim": "claim",
-    "command_claim_description": "If the owner has left the voice chat, use this command to take control of the channel",
-    "command_claim_log_name": "User tried to claim a VC",
-    "command_claim_already_own_channel": "You already own this channel",
-    "command_claim_owner_still_in_channel": "The owner is still in the channel. You cannot claim it",
-    "command_claim_you_are_now_owner": "You are now the owner of this channel",
-    "command_claim_you_must_be_in_voice_chat": "You must be in a user owned voice chat the owner has left to claim it",
+    "command_claim_description": "Nếu chủ sở hữu đã rời khỏi cuộc trò chuyện thoại, hãy sử dụng lệnh này để kiểm soát kênh",
+    "command_claim_log_name": "Người dùng đã cố gắng xác nhận một VC",
+    "command_claim_already_own_channel": "Bạn đã sở hữu kênh này",
+    "command_claim_owner_still_in_channel": "Chính chủ vẫn còn trong kênh. Bạn không thể yêu cầu nó",
+    "command_claim_you_are_now_owner": "Bạn hiện là chủ sở hữu của kênh này",
+    "command_claim_you_must_be_in_voice_chat": "Bạn phải tham gia cuộc trò chuyện thoại do người dùng sở hữu mà chủ sở hữu đã để lại để xác nhận quyền sở hữu",
 
     // /delete
     "command_delete": "delete",
-    "command_delete_description": "Delete the channel you own",
+    "command_delete_description": "Xóa kênh bạn sở hữu",
     "command_delete_log_name": "VC deleted",
-    "command_delete_channel_deleted": "Your channel has been deleted",
+    "command_delete_channel_deleted": "Kênh của bạn đã bị xóa",
 
     // /info
     "command_info": "info",
-    "command_info_description": "Get info about this bot, including mod commands",
-    "command_info_log_name": "User requested help",
+    "command_info_description": "Nhận thông tin về bot này, bao gồm các lệnh mod",
+    "command_info_log_name": "Người dùng đã yêu cầu trợ giúp",
 
     "command_info_how_to_use_dittovc": 
-`__How to use DittoVC__
+`__Cách sử dụng bot tạo phòng__
 /add user:username#0000 permissions:(All, Speak, or Listen)
-> Adds the user to the voice chat, defaults to all allowed permissions.
-
+> Thêm người dùng vào kênh thoại, mặc định cho tất cả các quyền.
 /remove user:username#0000
-> Remove the user from the voice chat.
-
+> Xóa người dùng khỏi kênh thoại.
 /public
-> Make your voice chat public.
-
+> Đặt cuộc trò chuyện thoại của bạn ở chế độ công khai.
 /private
-> Make your voice chat private.
-
+> Đặt cuộc trò chuyện thoại của bạn ở chế độ riêng tư.
 /max limit:number
-> Set a max number of users. 0 removes the limit. Still respects if the channel is public or private.
-
+> Đặt số lượng người dùng tối đa. 0 loại bỏ giới hạn. Vẫn hoạt động nếu kênh là công khai hoặc riêng tư.
 /name it:text
-> Give your voice chat a name.
-
+> Đặt tên cho cuộc trò chuyện thoại của bạn.
 /claim
-> Take over ownership of a channel after the owner has left.
-
+> Tiếp quản quyền sở hữu kênh sau khi chủ sở hữu đã rời đi.
 /delete
-> Delete your owned voice chat.
-
+> Xóa kênh thoại do bạn sở hữu.
 /region
-> Sets the region the voice chat is hosted in.
-
+> Chuyển vùng kênh thoại.
 /info
-> Display this help message.
-
+> Hiển thị thông báo trợ giúp này.
 __Mod Commands__
 /register vc:voice-channel info:text-channel permissions:role publicpermissions:role ispublic:boolean name:text
 > Register a voice channel for cloning. Info and permissions are optional. Use info to specify a text channel where instructions will be sent to the user creating a voice chat. Use permissions to specify a role to control the maximum permissions a user is allowed to have. For instance, if you do not want to allow streaming in your server, make a role that restricts streaming permissions on the channel, then register the voice channel specifying permissions:@YourRole. Streaming would then be restricted on that voice channel for everyone, including the owner. Use ispublic to start a voice chat as public. Defaults to private. Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number.
-
 /unregister vc:voice-channel
 > Unregister a voice channel for cloning.
-
 /log to:text-channel
 > Log all commands, creations, joins, and leaves for this server to a channel.`,
 
     // /log
     "command_log": "log",
-    "command_log_description": "Specify a channel for recording logs. To disable logging, do not set the \"to\" parameter",
+    "command_log_description": "Chỉ định một kênh để ghi nhật ký. Để tắt ghi nhật ký, không đặt \"to\" tham số",
     "command_log_param_to": "to",
-    "command_log_param_to_description": "The channel to use for logging.  Make sure the bot has access to it!",
-    "command_log_not_a_text_channel": "<#%1$s> is not a text channel.  Please specify a text channel, then try again",
-    "command_log_need_send_messages": "Please grant me SEND_MESSAGES in <#%1$s>, then try again",
-    "command_log_will_log_to": "I will now log joins, leaves, and commands to <#%1$s>",
+    "command_log_param_to_description": "Kênh để sử dụng để ghi nhật ký. Đảm bảo rằng bot có quyền truy cập vào nó!",
+    "command_log_not_a_text_channel": "<#%1$s> không phải là một kênh văn bản. Vui lòng chỉ định kênh văn bản, sau đó thử lại",
+    "command_log_need_send_messages": "Vui lòng cấp cho tôi SEND_MESSAGES trong <#%1$s>, sau đó thử lại",
+    "command_log_will_log_to": "Bây giờ tôi sẽ ghi nhật ký các phép nối, rời và lệnh tới <#%1$s>",
     "command_log_log_name": "Logging enabled",
-    "command_log_disabled": "Logging for this server has been disabled",
+    "command_log_disabled": "Ghi nhật ký cho máy chủ này đã bị vô hiệu hóa",
 
     // /max
     "command_max": "max",
-    "command_max_description": "Make this channel limited to a certain number of users",
+    "command_max_description": "Đặt kênh này giới hạn ở một số lượng người dùng nhất định",
     "command_max_param_limit": "limit",
-    "command_max_param_limit_description": "The maximum number of people you wish to join the voice chat",
-    "command_max_log_name": "User changed max users",
-    "command_max_greater_than_zero": "You must specify a limit greater than or equal to 0",
-    "command_max_less_than_one_hundred": "You must specify a limit less than 100",
-    "command_max_limit_removed": "The participant limit for <#%1$s> has been removed",
-    "command_max_limit_set": "The max participants for <#%1$s> is now set to %2$s",
+    "command_max_param_limit_description": "Số người tối đa bạn muốn tham gia trò chuyện thoại",
+    "command_max_log_name": "Người dùng đã thay đổi người dùng tối đa",
+    "command_max_greater_than_zero": "Bạn phải chỉ định giới hạn lớn hơn hoặc bằng 0",
+    "command_max_less_than_one_hundred": "Bạn phải chỉ định giới hạn nhỏ hơn 100",
+    "command_max_limit_removed": "Giới hạn người tham gia cho <#%1$s> đã bị loại bỏ",
+    "command_max_limit_set": "The max participants for <#%1$s> bây giờ được đặt thành %2$s",
 
     // /name
     "command_name": "name", 
-    "command_name_description": "Name your voice chat! Once you name it, you cannot change it unless you remake the channel.",
+    "command_name_description": "Đặt tên cho cuộc trò chuyện thoại của bạn! Sau khi đặt tên, bạn không thể thay đổi tên đó trừ khi bạn làm lại kênh.",
     "command_name_param_it": "it",
-    "command_name_param_it_description": "The name you want to name your VC",
+    "command_name_param_it_description": "Tên bạn muốn đặt cho VC của mình",
     "command_name_log_name": "VC named",
-    "command_name_please_specify": "Please specify a name to use",
-    "command_name_too_long": "Please specify a name that is less than 33 characters",
-    "command_name_renaming_disabled": "Renaming voice channels is disabled",
-    "command_name_already_named": "You already named your voice chat",
-    "command_name_renamed": "Your channel has been renamed",
+    "command_name_please_specify": "Vui lòng chỉ định một tên để sử dụng",
+    "command_name_too_long": "Vui lòng chỉ định tên ít hơn 33 ký tự",
+    "command_name_renaming_disabled": "Đổi tên kênh thoại bị tắt",
+    "command_name_already_named": "Bạn đã đặt tên cho cuộc trò chuyện thoại của mình",
+    "command_name_renamed": "Kênh của bạn đã được đổi tên",
 
     // /private
     "command_private": "private",
-    "command_private_description": "Make this channel private",
-    "command_private_log_name": "User made VC private",
-    "command_private_only_members_can_join": "Only members you invite can join <#%1$s>",
+    "command_private_description": "Đặt kênh này ở chế độ riêng tư",
+    "command_private_log_name": "Người dùng đã đặt VC ở chế độ riêng tư",
+    "command_private_only_members_can_join": "Chỉ những thành viên bạn mời mới có thể tham gia <#%1$s>",
 
     // /public
     "command_public": "public",
-    "command_public_description": "Make this channel public",
-    "command_public_log_name": "User made VC public",
-    "command_public_everyone_can_join": "Everyone can now join <#%1$s>",
+    "command_public_description": "Đặt kênh này ở chế độ công khai",
+    "command_public_log_name": "Người dùng đã đặt VC ở chế độ công khai",
+    "command_public_everyone_can_join": "Mọi người hiện có thể tham gia <#%1$s>",
 
     // /region
     "command_region": "region",
-    "command_region_description": "Set your voice chat's region",
+    "command_region_description": "Đặt khu vực trò chuyện thoại của bạn",
     "command_region_param_country": "country",
-    "command_region_param_country_description": "Where you want the voice chat to be hosted",
+    "command_region_param_country_description": "Nơi bạn muốn cuộc trò chuyện thoại được lưu trữ",
 
     "command_region_param_country_option_automatic": "Automatic",
     "command_region_param_country_option_brazil": "Brazil",
@@ -189,8 +177,8 @@ __Mod Commands__
     "command_region_param_country_option_ussouth": "US South",
     "command_region_param_country_option_uswest": "US West",
 
-    "command_region_log_name": "VC region changed",
-    "command_region_channel_moved": "Your channel has been moved to %1$s",
+    "command_region_log_name": "Khu vực VC đã thay đổi",
+    "command_region_channel_moved": "Kênh của bạn đã được chuyển đến %1$s",
 
     // /register
     "command_register": "register",
@@ -223,13 +211,13 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
 
     // /remove
     "command_remove": "remove",
-    "command_remove_description": "Remove a user from this channel",
+    "command_remove_description": "Xóa người dùng khỏi kênh này",
     "command_remove_param_user": "user",
-    "command_remove_param_user_description": "The user you would like remove from this channel",
-    "command_remove_log_name": "User removed from VC",
-    "command_remove_bots_cannot_be_removed": "Bots cannot be removed from voice chat",
-    "command_mods_cannot_be_removed": "Moderators cannot be removed by commands",
-    "command_remove_user_removed": "%1$s#%2$s has been removed",
+    "command_remove_param_user_description": "Người dùng bạn muốn xóa khỏi kênh này",
+    "command_remove_log_name": "Người dùng đã bị xóa khỏi VC",
+    "command_remove_bots_cannot_be_removed": "Không thể xóa bot khỏi trò chuyện thoại",
+    "command_mods_cannot_be_removed": "Moderators không thể loại bỏ khỏi kênh này",
+    "command_remove_user_removed": "%1$s#%2$s đã bị xoá khỏi kênh thoại",
 
     // /unregister
     "command_unregister": "unregister",
@@ -240,48 +228,39 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
     "command_unregister_success": "Un-registered <#%1$s> for cloning",
 
     // voiceStateUpdate
-    "voicestateupdate_user_left_log_name": "User left VC",
-    "voicestateupdate_user_left_log_description": "<@%1$s> left %2$s",
-    "voicestateupdate_rate_limited": "<@%1$s> please wait a few minutes before trying to create a new voice chat",
-    "voicestateupdate_rate_limited_log_name": "Join cooldown in effect",
-    "voicestateupdate_rate_limited_log_description": "<@%1$s> tried to create a VC, but hit cooldown",
-    "voicestateupdate_user_created_vc_log_name": "User created VC",
-    "voicestateupdate_user_created_vc_log_description": "<@%1$s> created %2$s",
+    "voicestateupdate_user_left_log_name": "Người dùng đã rời khỏi VC",
+    "voicestateupdate_user_left_log_description": "<@%1$s> rời khỏi %2$s",
+    "voicestateupdate_rate_limited": "<@%1$s> vui lòng đợi một vài phút trước khi cố gắng tạo một cuộc trò chuyện thoại mới",
+    "voicestateupdate_rate_limited_log_name": "Tham gia cooldown có hiệu lực",
+    "voicestateupdate_rate_limited_log_description": "<@%1$s> đã cố gắng tạo một VC, nhưng lại gặp phải giới hạn thời gian",
+    "voicestateupdate_user_created_vc_log_name": "Người dùng đã tạo VC",
+    "voicestateupdate_user_created_vc_log_description": "<@%1$s> tạo %2$s",
     "voicestateupdate_how_to_use_dittovc": 
 `<@%1$s>
-__How to use DittoVC__
+__Cách sử dụng bot tạo phòng riêng__
 /info
-> See the detailed help message.
-
+> Xem trợ giúp chi tiết.
 /add user:username#0000 permissions:(All, Speak, or Listen)
-> Adds the user to the voice chat, defaults to all allowed permissions.
-
+> Thêm người dùng vào kênh thoại, mặc định cho tất cả các quyền được phép.
 /remove user:username#0000
-> Remove the user from the voice chat.
-
+> Xóa người dùng khỏi cuộc trò chuyện thoại.
 /public
-> Make your voice chat public.
-
+> Đặt kênh thoại của bạn ở chế độ công khai.
 /private
-> Make your voice chat private.
-
+> Đặt kênh thoại của bạn ở chế độ riêng tư.
 /max limit:number
-> Set a max number of users. 0 removes the limit. Still respects if the channel is public or private.
-
+> Đặt số lượng người dùng tối đa. 0 loại bỏ giới hạn.
 /name it:text
-> Give your voice chat a name.
-
+> Đặt tên cho cuộc trò chuyện thoại của bạn.
 /claim
-> Take over ownership of a channel after the owner has left.
-
+> Tiếp quản quyền sở hữu kênh sau khi chủ sở hữu đã rời đi.
 /delete
-> Delete your owned voice chat.
-
+> Xóa kênh thoại do bạn sở hữu.
 /region
-> Sets the region the voice chat is hosted in.`,
+> Đặt khu vực trò chuyện thoại được lưu trữ.`,
 
-    "voicestateupdate_user_joined_vc_log_name": "User joined VC",
-    "voicestateupdate_user_joined_vc_log_description": "<@%1$s> joined %2$s"
+    "voicestateupdate_user_joined_vc_log_name": "Người dùng đã tham gia VC",
+    "voicestateupdate_user_joined_vc_log_description": "<@%1$s> đã tham gia %2$s"
 };
 
 // WARNING: DO NOT EDIT ANYTHING BELOW THIS LINE
