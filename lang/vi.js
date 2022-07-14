@@ -25,9 +25,9 @@ const strict = true;
     // /add
     "command_add": "add",
     "command_add_description": "Cấp cho người dùng quyền truy cập vào kênh này",
-    "command_add_param_user": "người sử dụng",
+    "command_add_param_user": "user",
     "command_add_param_user_description": "Người dùng bạn muốn mời",
-    "command_add_param_permissions": "Quyền hạn",
+    "command_add_param_permissions": "permissions",
     "command_add_param_permissions_description": "Quyền bạn muốn cấp cho người dùng",
     "command_add_param_permissions_option_all": "All",
     "command_add_param_permissions_option_speak": "speak",
@@ -134,7 +134,7 @@ __Mod Commands__
 
     // /name
     "command_name": "name", 
-    "command_name_description": "Đặt tên cho cuộc trò chuyện thoại của bạn! Sau khi đặt tên, bạn không thể thay đổi tên đó trừ khi bạn làm lại kênh.",
+    "command_name_description": "Đặt tên cho cuộc trò chuyện thoại của bạn! Sau khi bạn đặt tên, bạn không thể thay đổi nó.",
     "command_name_param_it": "it",
     "command_name_param_it_description": "Tên bạn muốn đặt cho VC của mình",
     "command_name_log_name": "VC named",
