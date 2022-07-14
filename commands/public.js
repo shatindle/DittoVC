@@ -14,11 +14,13 @@ module.exports = {
 	async execute(interaction) {
         try {
             const lang = interaction.guild.preferredLocale;
+
+            const logDetails = interaction.componentType === "BUTTON" ? getLang(lang, "command_public_button_click", "Clicked button 'public'") : interaction.toString();
             
             await logActivity(interaction.client, 
                 interaction.guild.id, 
                 getLang(lang, "command_public_log_name", "User made VC public"), 
-                getLang(lang, "command_user_used", "<@%1$s> used:\n %2$s", interaction.user.id, interaction.toString()));
+                getLang(lang, "command_user_used", "<@%1$s> used:\n %2$s", interaction.user.id, logDetails));
             
             const guildId = interaction.guild.id;
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);

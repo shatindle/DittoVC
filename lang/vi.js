@@ -260,7 +260,26 @@ __Cách sử dụng bot tạo phòng riêng__
 > Đặt khu vực trò chuyện thoại được lưu trữ.`,
 
     "voicestateupdate_user_joined_vc_log_name": "Người dùng đã tham gia VC",
-    "voicestateupdate_user_joined_vc_log_description": "<@%1$s> đã tham gia %2$s"
+    "voicestateupdate_user_joined_vc_log_description": "<@%1$s> đã tham gia %2$s",
+
+    "command_menu": "menu",
+    "command_menu_description": "Tạo menu điều khiển tĩnh",
+    "command_menu_param_channel": "channel",
+    "command_menu_param_channel_description": "Kênh để tạo menu lệnh trong",
+    "command_menu_log_name": "Người điều hành đã tạo menu điều khiển",
+    "command_menu_click_here_to_control": "Khi bạn đã tạo cuộc trò chuyện thoại, hãy sử dụng menu này để điều khiển nó! Có nhiều lệnh hơn thông qua các lệnh gạch chéo. Làm `/info` để tìm hiểu thêm.",
+
+    "command_private_button_click": "Đã nhấp vào nút 'private'",
+    "command_public_button_click": "Đã nhấp vào nút 'public'",
+
+    "command_max_modal_log_name": "Phương thức 'max' do người dùng tải",
+    "command_max_modal_description": "Đã nhấp vào nút 'max'",
+    "command_max_modal_title": "Đặt người dùng tối đa cho cuộc trò chuyện thoại của bạn",
+    "command_max_modal_param_limit": "Số lượng người dùng tối đa",
+
+    "command_max_modalsubmit_log_name": "Người dùng đã gửi phương thức 'max'",
+    "command_max_modalsubmit_description": "Đã gửi phương thức tối đa",
+    "command_max_modal_response_not_numbers": "Giới hạn phải là một số từ 0 đến 99"
 };
 
 // WARNING: DO NOT EDIT ANYTHING BELOW THIS LINE

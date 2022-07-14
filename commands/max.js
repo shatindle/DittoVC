@@ -15,7 +15,7 @@ module.exports = {
                 .setDescription("The maximum number of people you wish to join the voice chat")
                 .setDescriptionLocalizations(getLocalizations("command_max_param_limit_description", "The maximum number of people you wish to join the voice chat"))
                 .setRequired(true)),
-	async execute(interaction) {
+	async execute(interaction, passedInLimit) {
         try {
             const lang = interaction.guild.preferredLocale;
             
@@ -26,7 +26,7 @@ module.exports = {
 
             const guildId = interaction.guild.id;
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
-            let limit = Math.floor(interaction.options.getNumber("limit"));
+            let limit = typeof passedInLimit === "number" ? passedInLimit : Math.floor(interaction.options.getNumber("limit"));
 
             if (ownedChannel) {
                 if (limit < 0) {

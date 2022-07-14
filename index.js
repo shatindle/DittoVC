@@ -24,6 +24,9 @@ const {
 } = require("./dal/cooldownApi");
 const logActivity = require('./logic/logActivity');
 const { getLang } = require("./lang");
+const { execute:publicCommand } = require("./commands/public");
+const { execute:privateCommand } = require("./commands/private");
+const { createModal:maxModal, modalSubmit:maxModalSubmit } = require("./modal/maxModal");
 
 const client = new Client({ 
     intents: [
@@ -315,6 +318,7 @@ __How to use DittoVC__
     }
 });
 
+// slash command control
 client.on('interactionCreate', async interaction => {
     const lang = interaction.guild.preferredLocale;
 	if (!interaction.isCommand()) return;
@@ -333,6 +337,28 @@ client.on('interactionCreate', async interaction => {
             ephemeral: true 
         });
 	}
+});
+
+// button interaction controls
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isButton()) return;
+
+    switch (interaction.customId) {
+        case "public": return await publicCommand(interaction);
+        case "private": return await privateCommand(interaction);
+        case "max": return await maxModal(interaction);
+        default: await interaction.reply({ content: "Unknown interaction" });
+    }
+});
+
+// modal interaction controls
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isModalSubmit()) return;
+
+    switch (interaction.customId) {
+        case "maxmodal": return await maxModalSubmit(interaction);
+        default: await interaction.reply({ content: "Unknown interaction" });
+    }
 });
 
 client.login(token);
