@@ -321,43 +321,37 @@ __How to use DittoVC__
 // slash command control
 client.on('interactionCreate', async interaction => {
     const lang = interaction.guild.preferredLocale;
-	if (!interaction.isCommand()) return;
-
-	const command = client.commands.get(interaction.commandName);
-
-	if (!command) return;
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		await interaction.reply({ 
+	if (interaction.isCommand()) {
+        const command = client.commands.get(interaction.commandName);
+    
+        if (!command) return await interaction.reply({ 
             content: 
             getLang(lang, "generic_error", "There was an error while executing this command!"), 
             ephemeral: true 
         });
-	}
-});
-
-// button interaction controls
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isButton()) return;
-
-    switch (interaction.customId) {
-        case "public": return await publicCommand(interaction);
-        case "private": return await privateCommand(interaction);
-        case "max": return await maxModal(interaction);
-        default: await interaction.reply({ content: "Unknown interaction" });
-    }
-});
-
-// modal interaction controls
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isModalSubmit()) return;
-
-    switch (interaction.customId) {
-        case "maxmodal": return await maxModalSubmit(interaction);
-        default: await interaction.reply({ content: "Unknown interaction" });
+    
+        try {
+            return await command.execute(interaction);
+        } catch (error) {
+            console.error(error);
+            return await interaction.reply({ 
+                content: 
+                getLang(lang, "generic_error", "There was an error while executing this command!"), 
+                ephemeral: true 
+            });
+        }
+    } else if (interaction.isButton()) {
+        switch (interaction.customId) {
+            case "public": return await publicCommand(interaction);
+            case "private": return await privateCommand(interaction);
+            case "max": return await maxModal(interaction);
+            default: return await interaction.reply({ content: "Unknown interaction" });
+        }
+    } else if (interaction.isModalSubmit()) {
+        switch (interaction.customId) {
+            case "maxmodal": return await maxModalSubmit(interaction);
+            default: return await interaction.reply({ content: "Unknown interaction" });
+        }
     }
 });
 
