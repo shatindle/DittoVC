@@ -511,6 +511,57 @@ async function removeFromBlacklist(guildId, text) {
     }
 }
 
+const callbacks = {};
+const observers = {};
+
+function addressChanges(changes, list) {
+    try {
+        changes.added.forEach(item => list[item._id] = item);
+        changes.modified.forEach(item => list[item._id] = item);
+        changes.removed.forEach(item => delete list[item._id]);
+    } catch (err) {
+        console.log(`Failed to address changes: ${err.toString()}`);
+    }
+}
+
+function monitor(type, callback) {
+    if (!callbacks[type]) callbacks[type] = [];
+
+    callbacks[type].push(callback);
+
+    setupObservers();
+}
+
+
+function setupObservers() {
+    for (let observer of Object.keys(callbacks)) {
+        if (!observers[observer] && callbacks[observer] && callbacks[observer].length > 0)
+            observers[observer] = configureObserver(observer, callbacks[observer]);
+    }
+}
+
+function configureObserver(type, callbackGroup) {
+    return db.collection(type).onSnapshot(async querySnapshot => {
+        let changes = {
+            added: [],
+            modified: [],
+            removed: []
+        };
+    
+        querySnapshot.docChanges().forEach(change => {
+            changes[change.type].push({...change.doc.data(), _id:change.doc.id});
+        });
+    
+        for (let i = 0; i < callbackGroup.length; i++) {
+            try {
+                await callbackGroup[i].call(null, changes);
+            } catch (err) {
+                console.log(`Error in callback ${i} of ${type}: ${err.toString()}`);
+            }
+        }
+    });
+}
+
 module.exports = {
     registerChannel,
     unregisterChannel,
@@ -539,5 +590,8 @@ module.exports = {
     getBlacklist,
     addToBlacklist,
     removeFromBlacklist,
-    BLACKLIST_LIMIT
+    BLACKLIST_LIMIT,
+
+    monitor,
+    addressChanges
 };

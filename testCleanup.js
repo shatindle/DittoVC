@@ -1,6 +1,10 @@
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const { cleanChannel } = require("./logic/channelCleanup");
+const { 
+    pruneClones, 
+    pruneRegisters,
+    setupListeners 
+} = require("./logic/channelCleanup");
 
 const client = new Client({ 
     intents: [
@@ -9,8 +13,11 @@ const client = new Client({
         Intents.FLAGS.GUILD_MESSAGES
     ] });
 
+setupListeners();
+
 client.once('ready', async () => {
-    await cleanChannel(client, "CHANNELIDHERE");
+    //setTimeout(() => pruneRegisters(client), 5000);
+    // await pruneClones(client);
     console.log("ready!");
 });
 
