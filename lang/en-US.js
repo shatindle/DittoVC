@@ -297,7 +297,9 @@ __How to use DittoVC__
     "command_max_modalsubmit_description": "Submitted max modal",
     "command_max_modal_response_not_numbers": "The limit must be a number from 0 to 99",
 
-    "command_menu_success": "Menu successfully created!"
+    "command_menu_success": "Menu successfully created!",
+    "channel_cleanup": "Channel Cleanup",
+    "channel_cleanup_description": "Channel '%1$s' has been cleaned up"
 
 };
 

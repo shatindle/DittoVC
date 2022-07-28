@@ -281,7 +281,9 @@ __Cách sử dụng bot tạo phòng riêng__
     "command_max_modalsubmit_description": "Đã gửi phương thức tối đa",
     "command_max_modal_response_not_numbers": "Giới hạn phải là một số từ 0 đến 99",
 
-    "command_menu_success": "Đã tạo menu thành công!"
+    "command_menu_success": "Đã tạo menu thành công!",
+    "channel_cleanup": "Dọn kênh",
+    "channel_cleanup_description": "Kênh '%1$s' đã được dọn dẹp"
 };
 
 // WARNING: DO NOT EDIT ANYTHING BELOW THIS LINE
