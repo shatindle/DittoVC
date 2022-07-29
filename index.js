@@ -48,18 +48,9 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-const lastActivity = {
-    val: ""
-};
-
 function updateStatus() {
     try {
-        const newActivity = `Clone VC in ${client.guilds.cache.size} servers`;
-
-        if (lastActivity.val !== newActivity) {
-            client.user.setActivity(newActivity);
-            lastActivity.val = newActivity;
-        }
+        client.user.setActivity(`Clone VC in ${client.guilds.cache.size} servers`);
     } catch (err) {
         console.log(`Error updating status: ${err}`)
     }
@@ -74,7 +65,7 @@ client.once('ready', async () => {
         await loadAllLogChannels();
         await loadAllBlacklists();
         updateStatus();
-        statusTimer = setInterval(updateStatus, 1000 * 60 * 60);
+        statusTimer = setInterval(updateStatus, 1000 * 60 * 30);
         loaded = true;
         channelCleanupListeners();
         pruneCloneTimer = setInterval(async () => {
