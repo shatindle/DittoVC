@@ -27,6 +27,11 @@ const { getLang } = require("./lang");
 const { execute:publicCommand } = require("./commands/public");
 const { execute:privateCommand } = require("./commands/private");
 const { createModal:maxModal, modalSubmit:maxModalSubmit } = require("./modal/maxModal");
+const { 
+    pruneClones, 
+    pruneRegisters,
+    setupListeners:channelCleanupListeners
+} = require("./logic/channelCleanup");
 
 const client = new Client({ 
     intents: [
@@ -43,9 +48,18 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
+const lastActivity = {
+    val: ""
+};
+
 function updateStatus() {
     try {
-        client.user.setActivity(`Clone VC in ${client.guilds.cache.size} servers`);
+        const newActivity = `Clone VC in ${client.guilds.cache.size} servers`;
+
+        if (lastActivity.val !== newActivity) {
+            client.user.setActivity(newActivity);
+            lastActivity.val = newActivity;
+        }
     } catch (err) {
         console.log(`Error updating status: ${err}`)
     }
@@ -53,6 +67,7 @@ function updateStatus() {
 
 let loaded = false;
 let statusTimer;
+let pruneCloneTimer;
 
 client.once('ready', async () => {
 	if (!loaded) {
@@ -61,6 +76,14 @@ client.once('ready', async () => {
         updateStatus();
         statusTimer = setInterval(updateStatus, 1000 * 60 * 60);
         loaded = true;
+        channelCleanupListeners();
+        pruneCloneTimer = setInterval(async () => {
+            try {
+                await pruneClones(client);
+            } catch (err) {
+                console.log(`Error pruning clones: ${err.toString()}`);
+            }
+        }, 1000 * 60 * 60);
     }
     console.log("ready!");
 });

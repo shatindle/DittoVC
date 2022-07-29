@@ -37,10 +37,14 @@ async function cleanClone(client, channelId) {
         }
     } catch (err) {
         if (err.message === "Unknown Channel") {
-            // channel is dead, get rid of it
-            await deleteClone(channelId);
+            try {
+                // channel is dead, get rid of it
+                await deleteClone(channelId);
+            } catch (err2) {
+                console.log(`Error in clone channel cleanup - 2nd error: ${err2.toString()}`);
+            }
         } else {
-            console.log(`Error in channel cleanup: ${err.toString()}`);
+            console.log(`Error in clone channel cleanup: ${err.toString()}`);
         }
     }
 }
@@ -55,16 +59,20 @@ async function cleanRegisters(client, channelId, guildId) {
         const channel = await client.channels.fetch(channelId);
         // all that we care about is that the channel exists.  If it does, move on.
     } catch (err) {
-        if (err.message === "Unknown Channel") {
-            // channel is dead, get rid of it
-            await unregisterChannel(channelId);
-        } else {
-            // check if the bot is still in the guild.  If it is, leave it alone
-            if (!client.guilds.cache.has(guildId)) {
-                // the bot is no longer in this guild.  Remove the register
+        try {
+            if (err.message === "Unknown Channel") {
+                // channel is dead, get rid of it
                 await unregisterChannel(channelId);
+            } else {
+                // check if the bot is still in the guild.  If it is, leave it alone
+                if (!client.guilds.cache.has(guildId)) {
+                    // the bot is no longer in this guild.  Remove the register
+                    await unregisterChannel(channelId);
+                }
+                console.log(`Error in register channel cleanup: ${err.toString()}`);
             }
-            console.log(`Error in channel cleanup: ${err.toString()}`);
+        } catch (err2) {
+            console.log(`Error in register channel cleanup - 2nd error: ${err2.toString()}`);
         }
     }
 }
