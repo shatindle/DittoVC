@@ -43,6 +43,17 @@ module.exports = {
 
                 const perms = allowedPermissions(ownedChannel.publicPermissions ?? ownedChannel.permissions, interaction.guild.roles.everyone.id);
 
+                const currentPerms = {}
+
+                try {
+                    // attempt to pull the current permissions
+                    channel.permissionOverwrites.cache.map(t => {
+                        currentPerms[t.id] = {};
+                        t.allow.toArray().forEach(perm => currentPerms[t.id][perm] = true);
+                        t.deny.toArray().forEach(perm => currentPerms[t.id][perm] = false);
+                    });
+                } catch {}
+
                 channel.permissionOverwrites.cache.each(async perm => {
                     if (perm.id !== interaction.client.user.id && perm.type === "member") {
                         let allowed = new Permissions(perm.allow);
@@ -61,6 +72,7 @@ module.exports = {
 
                         try {
                             await channel.permissionOverwrites.create(perm.id, {
+                                ...(currentPerms[perm.id] ?? {}), // this is required to maintain the default permissions
                                 CONNECT: true,
                                 STREAM: streamPerms,
                                 SPEAK: speakPerms,
@@ -82,6 +94,7 @@ module.exports = {
                 });
 
                 await channel.permissionOverwrites.create(interaction.guild.roles.everyone.id, {
+                    ...(currentPerms[interaction.guild.roles.everyone.id] ?? {}), // this is required to maintain the default permissions
                     CONNECT: true,
                     STREAM: perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
                     SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,

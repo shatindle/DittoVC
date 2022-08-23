@@ -1,4 +1,4 @@
-const { Permissions } = require("discord.js");
+const { Permissions, Constants } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { registerLogs } = require("../dal/databaseApi");
 const logActivity = require("../logic/logActivity");
@@ -14,7 +14,8 @@ module.exports = {
             option.setName("to")
                 .setNameLocalizations(getLocalizations("command_log_param_to", "to"))
                 .setDescription("The channel to use for logging.  Make sure the bot has access to it!")
-                .setDescriptionLocalizations(getLocalizations("command_log_param_to_description", "The channel to use for logging.  Make sure the bot has access to it!"))),
+                .setDescriptionLocalizations(getLocalizations("command_log_param_to_description", "The channel to use for logging.  Make sure the bot has access to it!"))
+                .addChannelTypes(Constants.ChannelTypes.GUILD_TEXT)),
 	async execute(interaction) {
         try {
             const lang = interaction.guild.preferredLocale;

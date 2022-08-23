@@ -1,4 +1,4 @@
-const { Permissions } = require("discord.js");
+const { Permissions, Constants } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { unregisterChannel } = require("../dal/databaseApi");
 const logActivity = require("../logic/logActivity");
@@ -15,7 +15,8 @@ module.exports = {
                 .setNameLocalizations(getLocalizations("command_unregister_param_vc", "vc"))
                 .setDescription("The voice channel to stop cloning")
                 .setDescriptionLocalizations(getLocalizations("command_unregister_param_vc_description", "The voice channel to stop cloning"))
-                .setRequired(true)),
+                .setRequired(true)
+                .addChannelTypes(Constants.ChannelTypes.GUILD_VOICE)),
 	async execute(interaction) {
         try {
             const lang = interaction.guild.preferredLocale;

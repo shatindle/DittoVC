@@ -79,10 +79,22 @@ module.exports = {
                     });
                     return;
                 }
+
+                const currentPerms = {}
+
+                try {
+                    // attempt to pull the current permissions
+                    channel.permissionOverwrites.cache.map(t => {
+                        currentPerms[t.id] = {};
+                        t.allow.toArray().forEach(perm => currentPerms[t.id][perm] = true);
+                        t.deny.toArray().forEach(perm => currentPerms[t.id][perm] = false);
+                    });
+                } catch {}
                 
                 const perms = allowedPermissions(ownedChannel.permissions, ownedChannel.roleId, request);
     
                 await channel.permissionOverwrites.create(invitedUser.id, {
+                    ...(currentPerms[invitedUser.id] ?? {}), // this is required to maintain the default permissions
                     CONNECT: true,
                     STREAM: perms.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
                     SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,

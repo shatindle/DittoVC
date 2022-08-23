@@ -172,7 +172,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 const permissions = getPermissions(claim, roleId);
                 const publicPermissions = getPermissions(claim, publicRoleId);
 
-                const clone = await claim.clone(undefined, true, false, "Clone");
+                const clone = await claim.clone();
 
                 let noClone = false;
 
@@ -183,8 +183,20 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     claim = clone;
                     noClone = true;
                 }
+
+                const currentPerms = {}
+
+                try {
+                    // attempt to pull the current permissions
+                    clone.permissionOverwrites.cache.map(t => {
+                        currentPerms[t.id] = {};
+                        t.allow.toArray().forEach(perm => currentPerms[t.id][perm] = true);
+                        t.deny.toArray().forEach(perm => currentPerms[t.id][perm] = false);
+                    });
+                } catch {}
                 
                 await claim.permissionOverwrites.create(client.user.id, {
+                    ...(currentPerms[client.user.id] ?? {}),
                     CONNECT: true,
                     STREAM: true,
                     SPEAK: true,
@@ -193,6 +205,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 if (channelStartsPublic) {
                     await claim.permissionOverwrites.create(userId, {
+                        ...(currentPerms[userId] ?? {}), // this is required to maintain the default permissions
                         CONNECT: true,
                         STREAM: publicPermissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
                         SPEAK: publicPermissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
@@ -200,6 +213,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     });
 
                     await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
+                        ...(currentPerms[claim.guild.roles.everyone.id] ?? {}), // this is required to maintain the default permissions
                         CONNECT: true,
                         STREAM: publicPermissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
                         SPEAK: publicPermissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
@@ -207,6 +221,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     });
                 } else {
                     await claim.permissionOverwrites.create(userId, {
+                        ...(currentPerms[userId] ?? {}), // this is required to maintain the default permissions
                         CONNECT: true,
                         STREAM: permissions.allow.indexOf(Permissions.FLAGS.STREAM) > -1,
                         SPEAK: permissions.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
@@ -214,6 +229,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     });
                     
                     await claim.permissionOverwrites.create(claim.guild.roles.everyone, {
+                        ...(currentPerms[claim.guild.roles.everyone.id] ?? {}), // this is required to maintain the default permissions
                         CONNECT: false,
                         STREAM: false,
                         SPEAK: false,

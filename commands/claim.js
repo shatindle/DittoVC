@@ -79,7 +79,19 @@ module.exports = {
                     }
                 });
 
+                const currentPerms = {}
+
+                try {
+                    // attempt to pull the current permissions
+                    claim.permissionOverwrites.cache.map(t => {
+                        currentPerms[t.id] = {};
+                        t.allow.toArray().forEach(perm => currentPerms[t.id][perm] = true);
+                        t.deny.toArray().forEach(perm => currentPerms[t.id][perm] = false);
+                    });
+                } catch {}
+
                 await claim.permissionOverwrites.create(userId, {
+                    ...(currentPerms[userId] ?? {}), // this is required to maintain the default permissions
                     CONNECT: true,
                     STREAM: streamPerms,
                     SPEAK: speakPerms,

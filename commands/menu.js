@@ -1,4 +1,4 @@
-const { Permissions, CommandInteraction, MessageActionRow, MessageButton } = require("discord.js");
+const { Permissions, CommandInteraction, MessageActionRow, MessageButton, Constants } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const logActivity = require("../logic/logActivity");
 const { getLocalizations, getLang } = require("../lang");
@@ -14,7 +14,8 @@ module.exports = {
                 .setNameLocalizations(getLocalizations("command_menu_param_channel", "channel"))
                 .setDescription("The channel to make the command menu in")
                 .setDescriptionLocalizations(getLocalizations("command_menu_param_channel_description", "The channel to make the command menu in"))
-                .setRequired(true)),
+                .setRequired(true)
+                .addChannelTypes(Constants.ChannelTypes.GUILD_TEXT)),
 	async execute(
         /** @type {CommandInteraction} */
         interaction) {

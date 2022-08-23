@@ -16,8 +16,8 @@ const client = new Client({
 setupListeners();
 
 client.once('ready', async () => {
-    //setTimeout(() => pruneRegisters(client), 5000);
-    // await pruneClones(client);
+    setTimeout(() => pruneRegisters(client), 5000);
+     //await pruneClones(client);
     console.log("ready!");
 });
 

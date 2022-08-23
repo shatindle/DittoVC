@@ -1,4 +1,4 @@
-const { Permissions } = require("discord.js");
+const { Permissions, Constants } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { registerChannel } = require("../dal/databaseApi");
 const logActivity = require("../logic/logActivity");
@@ -15,7 +15,8 @@ module.exports = {
                 .setNameLocalizations(getLocalizations("command_register_param_vc", "vc"))
                 .setDescription("The voice channel you wish to make cloneable")
                 .setDescriptionLocalizations(getLocalizations("command_register_param_vc_description", "The voice channel you wish to make cloneable"))
-                .setRequired(true))
+                .setRequired(true)
+                .addChannelTypes(Constants.ChannelTypes.GUILD_VOICE))
         .addStringOption(option => 
             option.setName("name")
                 .setNameLocalizations(getLocalizations("command_register_param_name", "name"))
@@ -25,7 +26,8 @@ module.exports = {
             option.setName("info")
                 .setNameLocalizations(getLocalizations("command_register_param_info", "info"))
                 .setDescription("The text channel to give users instructions in")
-                .setDescriptionLocalizations(getLocalizations("command_register_param_info_description", "The text channel to give users instructions in")))
+                .setDescriptionLocalizations(getLocalizations("command_register_param_info_description", "The text channel to give users instructions in"))
+                .addChannelTypes(Constants.ChannelTypes.GUILD_TEXT))
         .addRoleOption(option => 
             option.setName("permissions")
                 .setNameLocalizations(getLocalizations("command_register_param_permissions", "permissions"))
