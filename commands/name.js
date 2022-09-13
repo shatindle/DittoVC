@@ -46,15 +46,17 @@ module.exports = {
                 return;
             }
 
-            const filter = new Filter({ placeHolder: '.'});
-            const blacklist = getBlacklist(guildId);
-
-            if (blacklist && blacklist.length > 0)
-                filter.addWords(...blacklist);
-
-            requestedName = filter.clean(requestedName);
-
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
+
+            if (!ownedChannel.nofilter) {
+                const filter = new Filter({ placeHolder: '.'});
+                const blacklist = getBlacklist(guildId);
+    
+                if (blacklist && blacklist.length > 0)
+                    filter.addWords(...blacklist);
+    
+                requestedName = filter.clean(requestedName);
+            }
     
             if (ownedChannel) {
                 let channel;

@@ -14,6 +14,7 @@ const {
     getChannelRolePublic,
     doesChannelStartPublic,
     doesChannelAllowRenaming,
+    doesChannelHaveNoFilter,
     loadAllLogChannels,
     loadAllBlacklists
 } = require("./dal/databaseApi");
@@ -168,6 +169,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 const channelStartsPublic = await doesChannelStartPublic(joinedChannelId);
                 const channelAllowsRenaming = await doesChannelAllowRenaming(joinedChannelId);
+                const channelHasNoFilter = await doesChannelHaveNoFilter(joinedChannelId);
                 let prefix = await getChannelPrefix(joinedChannelId);
                 const permissions = getPermissions(claim, roleId);
                 const publicPermissions = getPermissions(claim, publicRoleId);
@@ -276,10 +278,10 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 if (noClone) {
                     member.voice.setChannel(claim);
-                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter);
                 } else {
-                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming);
-                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic, channelAllowsRenaming);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter);
+                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic, channelAllowsRenaming, channelHasNoFilter);
                     await unregisterChannel(claim.id);
                     await clone.edit({ position: newState.channel.position });
                 }

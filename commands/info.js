@@ -51,7 +51,7 @@ module.exports = {
 > Display this help message.
 
 __Mod Commands__
-/register vc:voice-channel info:text-channel permissions:role publicpermissions:role ispublic:boolean name:text
+/register vc:voice-channel info:text-channel permissions:role publicpermissions:role ispublic:boolean name:text rename:boolean nofilter:boolean
 > Register a voice channel for cloning. Info and permissions are optional. ` +
 `Use info to specify a text channel where instructions will be sent to the user creating a voice chat. ` +
 `Use permissions to specify a role to control the maximum permissions a user is allowed to have. ` + 
@@ -59,6 +59,7 @@ __Mod Commands__
 `then register the voice channel specifying permissions:@YourRole. Streaming would then be restricted on that voice channel for everyone, including the owner. ` +
 `Use ispublic to start a voice chat as public. Defaults to private. ` +
 `Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number.
+Use rename to allow users to rename this voice chat.  A word filter will be applied.  Use nofilter to disable the word filter.
 
 /unregister vc:voice-channel
 > Unregister a voice channel for cloning.

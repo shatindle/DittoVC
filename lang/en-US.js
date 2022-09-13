@@ -108,8 +108,8 @@ const text = {
 > Display this help message.
 
 __Mod Commands__
-/register vc:voice-channel info:text-channel permissions:role publicpermissions:role ispublic:boolean name:text
-> Register a voice channel for cloning. Info and permissions are optional. Use info to specify a text channel where instructions will be sent to the user creating a voice chat. Use permissions to specify a role to control the maximum permissions a user is allowed to have. For instance, if you do not want to allow streaming in your server, make a role that restricts streaming permissions on the channel, then register the voice channel specifying permissions:@YourRole. Streaming would then be restricted on that voice channel for everyone, including the owner. Use ispublic to start a voice chat as public. Defaults to private. Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number.
+/register vc:voice-channel info:text-channel permissions:role publicpermissions:role ispublic:boolean name:text rename:boolean nofilter:boolean
+> Register a voice channel for cloning. Info and permissions are optional. Use info to specify a text channel where instructions will be sent to the user creating a voice chat. Use permissions to specify a role to control the maximum permissions a user is allowed to have. For instance, if you do not want to allow streaming in your server, make a role that restricts streaming permissions on the channel, then register the voice channel specifying permissions:@YourRole. Streaming would then be restricted on that voice channel for everyone, including the owner. Use ispublic to start a voice chat as public. Defaults to private. Name must be less than 29 characters, and can include a special {count} variable that will be replaced with the next available channel number. Use rename to allow users to rename this voice chat. A word filter will be applied.  Use nofilter to disable the word filter.
 
 /unregister vc:voice-channel
 > Unregister a voice channel for cloning.
@@ -204,9 +204,12 @@ __Mod Commands__
     "command_register_param_publicpermissions_description": "Treat this role as the max permissions allowed for public VCs",
     "command_register_param_rename": "rename",
     "command_register_param_rename_description": "Whether or not to allow users to rename the voice channel",
+    "command_register_param_nofilter": "nofilter",
+    "command_register_param_nofilter_description": "Turn off the word filter for channel names.  Default is false.  True is not recommended.",
     "command_register_log_name": "Mod registered clone VC",
     "command_register_channel_must_be_voice": "VC parameter needs a voice channel",
     "command_register_name_too_long": "Name of the channel must be 28 characters or less.",
+    "command_register_nofilter_channel": "**Users will be allowed to rename this channel.** You have disabled the word filter for this cloneable channel. __You are responsible for your users and your server in the event your users name the channel something that breaks Discord's TOS and results in action against your server and the owner's account.__ It is strongly recommended that you re-register the cloneable channel with the word filter enabled with \"nofilter\" set to False (the default value).",
 
     "command_register_info": 
 `Registered <#%1$s> for cloning.
