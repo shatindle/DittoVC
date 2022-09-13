@@ -47,7 +47,12 @@ module.exports = {
             option.setName("rename")
                 .setNameLocalizations(getLocalizations("command_register_param_rename", "rename"))
                 .setDescription("Whether or not to allow users to rename the voice channel")
-                .setDescriptionLocalizations(getLocalizations("command_register_param_rename_description", "Whether or not to allow users to rename the voice channel"))),
+                .setDescriptionLocalizations(getLocalizations("command_register_param_rename_description", "Whether or not to allow users to rename the voice channel"))
+        .addBooleanOption(option => 
+            option.setName("nofilter")
+                .setNameLocalizations(getLocalizations("command_register_param_nofilter"), "nofilter"))
+                .setDescription("Turn off the word filter for channel names.  Default is false.  True is not recommended.")
+                .setDescriptionLocalizations(getLocalizations("command_register_param_nofilter_description", "Turn off the word filter for channel names.  Default is false.  True is not recommended."))),
 	async execute(interaction) {
         try {
             const lang = interaction.guild.preferredLocale;
@@ -85,6 +90,7 @@ module.exports = {
             let publicRole = interaction.options.getRole("publicpermissions");
             const ispublic = interaction.options.getBoolean("ispublic") === true;
             const rename = interaction.options.getBoolean("rename") === true;
+            const nofilter = interaction.options.getBoolean("nofilter") === true;
 
             if (!privateRole)
                 privateRole = interaction.guild.roles.everyone;
@@ -111,7 +117,8 @@ module.exports = {
                 privateRole.id,
                 publicRole.id,
                 ispublic,
-                rename);
+                rename,
+                nofilter);
     
             let content = getLang(lang, "command_register_info",
 `Registered <#%1$s> for cloning.
@@ -126,8 +133,11 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
             if (instructions)
                 content += "\n" + getLang(lang, "command_register_instructions_channel", "Users will be notified in <#%1$s> of what to do.", instructions.id);
 
-            if (rename)
+            if (rename && !nofilter)
                 content += "\n" + getLang(lang, "command_register_rename_channel", "**Users will be allowed to rename this channel.** A default blacklist will be applied. Consider adding to the `/blacklist`.");
+
+            if (rename && nofilter)
+                content += "\n" + getLang(lang, "command_register_nofilter_channel", "**Users will be allowed to rename this channel.** You have disabled the word filter for this cloneable channel. __You are responsible for your users and your server in the event your users name the channel something that breaks Discord's TOS and results in action against your server and the owner's account.__ It is strongly recommended that you re-register the cloneable channel with the word filter enabled with \"nofilter\" set to False (the default value).")
     
             await interaction.reply({ content, ephemeral: true });
         } catch (err) {
