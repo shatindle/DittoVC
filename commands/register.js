@@ -50,9 +50,9 @@ module.exports = {
                 .setDescriptionLocalizations(getLocalizations("command_register_param_rename_description", "Whether or not to allow users to rename the voice channel")))
         .addBooleanOption(option => 
             option.setName("nofilter")
-                .setNameLocalizations(getLocalizations("command_register_param_nofilter"), "nofilter"))
+                .setNameLocalizations(getLocalizations("command_register_param_nofilter", "nofilter"))
                 .setDescription("Turn off the word filter for channel names.  Default is false.  True is not recommended.")
-                .setDescriptionLocalizations(getLocalizations("command_register_param_nofilter_description", "Turn off the word filter for channel names.  Default is false.  True is not recommended.")),
+                .setDescriptionLocalizations(getLocalizations("command_register_param_nofilter_description", "Turn off the word filter for channel names.  Default is false.  True is not recommended."))),
 	async execute(interaction) {
         try {
             const lang = interaction.guild.preferredLocale;
