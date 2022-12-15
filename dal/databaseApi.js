@@ -311,6 +311,7 @@ async function registerClone(claim, roleId, guildId, owner, permissions, publicP
         publicPermissions,
         rename,
         nofilter,
+        renameAttempts: [Date.now().valueOf()],
         createdOn: Firestore.Timestamp.now()
     });
 
@@ -322,7 +323,8 @@ async function registerClone(claim, roleId, guildId, owner, permissions, publicP
         permissions,
         publicPermissions,
         rename,
-        nofilter
+        nofilter,
+        renameAttempts: [Date.now().valueOf()],
     }, clones);
 }
 
@@ -410,8 +412,17 @@ async function nameOwnedChannel(id, name) {
     if (channel) {
         channel.name = name;
 
+        const now = Date.now().valueOf();
+
+        if (channel.renameAttempts) {
+            channel.renameAttempts.push(now);
+        } else {
+            channel.renameAttempts = [now];
+        }
+
         await db.collection(CLONES_COLLECTION).doc(id).update({
-            name
+            name,
+            renameAttempts: channel.renameAttempts
         });
 
         return;

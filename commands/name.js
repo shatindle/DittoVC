@@ -4,6 +4,8 @@ const logActivity = require('../logic/logActivity');
 var Filter = require('bad-words');
 const { getLocalizations, getLang } = require("../lang");
 
+const TEN_MINUTES = 1000 * 60 * 10;
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('name')
@@ -83,11 +85,31 @@ module.exports = {
                 }
 
                 if (ownedChannel.name) {
-                    await interaction.reply({ 
-                        content: getLang(lang, "command_name_already_named", "You already named your voice chat"), 
-                        ephemeral: true 
-                    });
-                    return;
+                    // check if this channel supports multiple renames
+                    if (ownedChannel.renameAttempts && ownedChannel.renameAttempts.length > 0) {
+                        // check if the previous 2 renames happened in the last 10 minutes
+                        let tenMinutesAgo = Date.now().valueOf() - TEN_MINUTES;
+                        let lessThanTenMinutes = ownedChannel.renameAttempts.filter(a => a > tenMinutesAgo);
+
+                        if (lessThanTenMinutes.length > 1) {
+                            const ms = tenMinutesAgo - (now - lessThanTenMinutes.sort()[0]); // get earliest time first
+                            const minutes = Math.trunc(ms / 60000);
+                            const timeLeft = minutes > 1 ? "" + minutes + " minutes" : "about a minute";
+
+                            await interaction.reply({ 
+                                content: getLang(lang, "command_name_already_named", `You already named your voice chat.  Please wait ${timeLeft} before trying again.`), 
+                                ephemeral: true 
+                            });
+                            return;
+                        }
+                    } else {
+                        // legacy support before multiple renames was a thing
+                        await interaction.reply({ 
+                            content: getLang(lang, "command_name_already_named", "You already named your voice chat"), 
+                            ephemeral: true 
+                        });
+                        return;
+                    }
                 }
 
                 await nameOwnedChannel(ownedChannel.id, requestedName);
