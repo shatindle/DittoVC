@@ -88,7 +88,8 @@ module.exports = {
                     // check if this channel supports multiple renames
                     if (ownedChannel.renameAttempts && ownedChannel.renameAttempts.length > 0) {
                         // check if the previous 2 renames happened in the last 10 minutes
-                        let tenMinutesAgo = Date.now().valueOf() - TEN_MINUTES;
+                        let now = Date.now().valueOf();
+                        let tenMinutesAgo = now - TEN_MINUTES;
                         let lessThanTenMinutes = ownedChannel.renameAttempts.filter(a => a > tenMinutesAgo);
 
                         if (lessThanTenMinutes.length > 1) {
