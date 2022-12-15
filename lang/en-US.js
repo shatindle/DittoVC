@@ -149,6 +149,7 @@ __Mod Commands__
     "command_name_too_long": "Please specify a name that is less than 33 characters",
     "command_name_renaming_disabled": "Renaming voice channels is disabled",
     "command_name_already_named": "You already named your voice chat",
+    "command_name_already_named_wait": "You already named your voice chat.  Please wait %1$s before trying again.",
     "command_name_renamed": "Your channel has been renamed",
 
     // /private

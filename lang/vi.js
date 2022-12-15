@@ -142,6 +142,7 @@ __Mod Commands__
     "command_name_too_long": "Vui lòng chỉ định tên ít hơn 33 ký tự",
     "command_name_renaming_disabled": "Đổi tên kênh thoại bị tắt",
     "command_name_already_named": "Bạn đã đặt tên cho cuộc trò chuyện thoại của mình",
+    "command_name_already_named_wait": "Bạn đã đặt tên cho cuộc trò chuyện thoại của mình. Vui lòng đợi %1$s trước khi thử lại.",
     "command_name_renamed": "Kênh của bạn đã được đổi tên",
 
     // /private
