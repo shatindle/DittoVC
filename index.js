@@ -351,8 +351,8 @@ __How to use DittoVC__
 
                     await logActivity(client, 
                         guild.id, 
-                        getLang(lang, "voicestateupdate_user_left_log_name", "User left VC"), 
-                        getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s", userId, abandonedChannelName));
+                        getLang(lang, "voicestateupdate_user_left_log_name", "User abandoned VC"), 
+                        getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s before the channel was fully cloned", userId, abandonedChannelName));
                 }
             } else {
                 await logActivity(client, 
