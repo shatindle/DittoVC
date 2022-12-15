@@ -339,6 +339,21 @@ __How to use DittoVC__
                         } catch { /* errored, but don't care */ }
                     }, 60000);
                 }
+
+                // make sure the user is still in this voice chat.  It is possible they left mid-way through...
+                claim = await client.channels.fetch(joinedChannelId);
+
+                if (claim && claim.members && claim.members.size < 1) {
+                    // all users left, clean this channel up
+                    let abandonedChannelName =  claim.name;
+                    await claim.delete();
+                    await deleteClone(joinedChannelId);
+
+                    await logActivity(client, 
+                        guild.id, 
+                        getLang(lang, "voicestateupdate_user_left_log_name", "User left VC"), 
+                        getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s", userId, abandonedChannelName));
+                }
             } else {
                 await logActivity(client, 
                     guild.id, 
