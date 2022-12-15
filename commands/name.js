@@ -98,7 +98,7 @@ module.exports = {
                             const timeLeft = minutes > 1 ? "" + minutes + " minutes" : "about a minute";
 
                             await interaction.reply({ 
-                                content: getLang(lang, "command_name_already_named", `You already named your voice chat.  Please wait ${timeLeft} before trying again.`), 
+                                content: getLang(lang, "command_name_already_named", "You already named your voice chat.  Please wait %1$s before trying again.", timeLeft), 
                                 ephemeral: true 
                             });
                             return;
