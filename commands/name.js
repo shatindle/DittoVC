@@ -93,7 +93,7 @@ module.exports = {
                         let lessThanTenMinutes = ownedChannel.renameAttempts.filter(a => a > tenMinutesAgo);
 
                         if (lessThanTenMinutes.length > 1) {
-                            const ms = tenMinutesAgo - (now - lessThanTenMinutes.sort()[0]); // get earliest time first
+                            const ms = TEN_MINUTES - (now - lessThanTenMinutes.sort()[0]); // get earliest time first
                             const minutes = Math.trunc(ms / 60000);
                             const timeLeft = minutes > 1 ? "" + minutes + " minutes" : "about a minute";
 
