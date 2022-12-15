@@ -268,8 +268,6 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 for (var num of allNumbers) {
                     if (number === num) {
                         number++;
-                    } else {
-                        break;
                     }
                 }
 
