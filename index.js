@@ -283,7 +283,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter);
                     await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic, channelAllowsRenaming, channelHasNoFilter);
                     await unregisterChannel(claim.id);
-                    await clone.edit({ position: newState.channel.position });
+                    // await clone.edit({ position: newState.channel.position });
+                    await clone.edit({ position: 0 }); // just move the channel to the top of the list
                 }
 
                 await logActivity(client, 
