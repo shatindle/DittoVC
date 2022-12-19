@@ -91,6 +91,8 @@ const COOL_DOWN = 1000 * 30;
 const currentClaims = {};
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
+    let claim, clone;
+
     try {
         const lang = newState.guild.preferredLocale;
         const { channelId: leftChannelId, guild, member } = oldState;
@@ -124,7 +126,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
         if (joinedChannelId) {
             currentClaims[joinedChannelId] = true;
-            let claim = client.channels.cache.get(joinedChannelId);
+            claim = client.channels.cache.get(joinedChannelId);
 
             if (!claim)
                 claim = await client.channels.fetch(joinedChannelId);
@@ -174,7 +176,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 const permissions = getPermissions(claim, roleId);
                 const publicPermissions = getPermissions(claim, publicRoleId);
 
-                const clone = await claim.clone();
+                clone = await claim.clone();
 
                 let noClone = false;
 
@@ -359,6 +361,38 @@ __How to use DittoVC__
         }
     } catch (err) {
         console.log(`Error in voiceStateUpdate: ${err}`);
+
+        // TODO: figure out at what point in the clone process we failed
+        try {
+            // if both channels exist and both are still clonable, delete the claim
+            if (claim && clone && claim.id && clone.id) {
+                let claimStillExists, cloneStillExists;
+
+                try {
+                    claimStillExists = await client.channels.fetch(claim.id);
+                } catch {}
+
+                try {
+                    cloneStillExists = await client.channels.fetch(clone.id);
+                } catch {}
+
+                if (claimStillExists && cloneStillExists && claimStillExists.id && cloneStillExists.id && claimStillExists.members.size < 1 && cloneStillExists.members.size < 1) {
+                    // check if both are still treated as cloneable in our system
+                    if (await isChannelClonable(claimStillExists.id) && await isChannelClonable(cloneStillExists.id)) {
+                        // we still think both can be cloned, so delete the claimed chat just in case perms are messed up
+                        await unregisterChannel(claimStillExists.id);
+                        await claimStillExists.delete();
+                        console.log(`Cleanup succeeded`);
+                        return;
+                    }
+                }
+            }
+
+            console.log(`No cleanup performed`);
+        } catch (err_clonefixfail) { 
+            /* we tried */ 
+            console.log(`Error in clone repair: ${err_clonefixfail}`);
+        }
     }
 });
 
