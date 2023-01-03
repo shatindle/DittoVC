@@ -263,7 +263,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     }
                 }
 
-                allNumbers.sort();
+                allNumbers.sort((a, b) => a-b);
 
                 for (var num of allNumbers) {
                     if (number === num) {
