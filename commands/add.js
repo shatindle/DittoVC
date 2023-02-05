@@ -101,11 +101,10 @@ module.exports = {
                     SEND_MESSAGES: perms.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1
                 });
                 
-                if (ownedChannel.ping ?? true) {
-                    await interaction.reply({ 
-                        content: getLang(lang, "command_add_user_can_join", "<@%1$s> can now join <#%2$s>", invitedUser.id, ownedChannel.id)
-                    });
-                }
+                await interaction.reply({ 
+                    content: getLang(lang, "command_add_user_can_join", "<@%1$s> can now join <#%2$s>", invitedUser.id, ownedChannel.id),
+                    ephemeral: !(ownedChannel.ping ?? true)
+                });
             } else {
                 await interaction.reply({ 
                     content: getLang(lang, "command_you_dont_own_vc", "You do not own a voice chat. Join a clonable voice chat to claim it"), 
