@@ -209,6 +209,8 @@ __Mod Commands__
     "command_register_param_nofilter_description": "Turn off the word filter for channel names.  Default is false.  True is not recommended.",
     "command_register_param_ping": "ping",
     "command_register_param_ping_description": "Whether or not to ping users added to a channel.  Default is True.",
+    "command_register_param_setmax": "setmax",
+    "command_register_param_setmax_description": "Allow users to adjust the max number of users in a channel.  Default is True.",
     "command_register_log_name": "Mod registered clone VC",
     "command_register_channel_must_be_voice": "VC parameter needs a voice channel",
     "command_register_name_too_long": "Name of the channel must be 28 characters or less.",
@@ -302,6 +304,7 @@ __How to use DittoVC__
     "command_max_modalsubmit_log_name": "User submitted max modal",
     "command_max_modalsubmit_description": "Submitted max modal",
     "command_max_modal_response_not_numbers": "The limit must be a number from 0 to 99",
+    "command_max_not_allowed": "This channel does not support setting a max",
 
     "command_menu_success": "Menu successfully created!",
     "channel_cleanup": "Channel Cleanup",

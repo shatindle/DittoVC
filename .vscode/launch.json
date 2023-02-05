@@ -20,7 +20,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\server-check.js"
+            "program": "${workspaceFolder}/server-check.js"
         },
         {
             "type": "pwa-node",
@@ -38,7 +38,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\testCleanup.js"
+            "program": "${workspaceFolder}/testCleanup.js"
         }
     ]
 }

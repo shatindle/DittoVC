@@ -202,6 +202,8 @@ __Mod Commands__
     "command_register_param_nofilter_description": "Turn off the word filter for channel names.  Default is false.  True is not recommended.",
     "command_register_param_ping": "ping",
     "command_register_param_ping_description": "Whether or not to ping users added to a channel.  Default is True.",
+    "command_register_param_setmax": "setmax",
+    "command_register_param_setmax_description": "Allow users to adjust the max number of users in a channel.  Default is True.",
     "command_register_log_name": "Mod registered clone VC",
     "command_register_channel_must_be_voice": "VC parameter needs a voice channel",
     "command_register_name_too_long": "Name of the channel must be 28 characters or less.",
@@ -286,6 +288,7 @@ __Cách sử dụng bot tạo phòng riêng__
     "command_max_modalsubmit_log_name": "Người dùng đã gửi phương thức 'max'",
     "command_max_modalsubmit_description": "Đã gửi phương thức tối đa",
     "command_max_modal_response_not_numbers": "Giới hạn phải là một số từ 0 đến 99",
+    "command_max_not_allowed": "Kênh này không hỗ trợ cài đặt tối đa",
 
     "command_menu_success": "Đã tạo menu thành công!",
     "channel_cleanup": "Dọn kênh",

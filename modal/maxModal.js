@@ -79,6 +79,14 @@ async function modalSubmit(interaction) {
         const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
 
         if (ownedChannel) {
+            if (!(ownedChannel.setmax ?? true)) {
+                await interaction.reply({ 
+                    content: getLang(lang, "command_max_not_allowed", "This channel does not support setting a max"), 
+                    ephemeral: true 
+                });
+                return;
+            }
+
             try {
                 await interaction.guild.channels.fetch(ownedChannel.id);
             } catch (nochannel) {

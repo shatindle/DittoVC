@@ -57,7 +57,12 @@ module.exports = {
             option.setName("ping")
                 .setNameLocalizations(getLocalizations("command_register_param_ping", "ping"))
                 .setDescription("Whether or not to ping users added to a channel.  Default is True.")
-                .setDescriptionLocalizations(getLocalizations("command_register_param_ping_description", "Whether or not to ping users added to a channel.  Default is True."))),
+                .setDescriptionLocalizations(getLocalizations("command_register_param_ping_description", "Whether or not to ping users added to a channel.  Default is True.")))
+        .addBooleanOption(option =>
+            option.setName("setmax")
+                .setNameLocalizations(getLocalizations("command_register_param_setmax", "setmax"))
+                .setDescription("Allow users to adjust the max number of users in a channel.  Default is True.")
+                .setDescriptionLocalizations(getLocalizations("command_register_param_setmax_description", "Allow users to adjust the max number of users in a channel.  Default is True."))),
 	async execute(interaction) {
         try {
             const lang = interaction.guild.preferredLocale;
@@ -97,6 +102,7 @@ module.exports = {
             const rename = interaction.options.getBoolean("rename") === true;
             const nofilter = interaction.options.getBoolean("nofilter") === true;
             const ping = interaction.options.getBoolean("ping") ?? true;
+            const setmax = interaction.options.getBoolean("setmax") ?? true;
 
             if (!privateRole)
                 privateRole = interaction.guild.roles.everyone;
@@ -125,7 +131,8 @@ module.exports = {
                 ispublic,
                 rename,
                 nofilter,
-                ping);
+                ping,
+                setmax);
     
             let content = getLang(lang, "command_register_info",
 `Registered <#%1$s> for cloning.

@@ -16,6 +16,7 @@ const {
     doesChannelAllowRenaming,
     doesChannelHaveNoFilter,
     doesChannelHavePing,
+    doesChannelHaveSetMax,
     loadAllLogChannels,
     loadAllBlacklists
 } = require("./dal/databaseApi");
@@ -174,6 +175,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 const channelAllowsRenaming = await doesChannelAllowRenaming(joinedChannelId);
                 const channelHasNoFilter = await doesChannelHaveNoFilter(joinedChannelId);
                 const channelHasPing = await doesChannelHavePing(joinedChannelId);
+                const channelHasSetMax = await doesChannelHaveSetMax(joinedChannelId);
                 let prefix = await getChannelPrefix(joinedChannelId);
                 const permissions = getPermissions(claim, roleId);
                 const publicPermissions = getPermissions(claim, publicRoleId);
@@ -278,10 +280,10 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 if (noClone) {
                     member.voice.setChannel(claim);
-                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter, channelHasPing);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter, channelHasPing, channelHasSetMax);
                 } else {
-                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter, channelHasPing);
-                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic, channelAllowsRenaming, channelHasNoFilter, channelHasPing);
+                    await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter, channelHasPing, channelHasSetMax);
+                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic, channelAllowsRenaming, channelHasNoFilter, channelHasPing, channelHasSetMax);
                     await unregisterChannel(claim.id);
                     // await clone.edit({ position: newState.channel.position });
                     await clone.edit({ position: 0 }); // just move the channel to the top of the list

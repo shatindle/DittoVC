@@ -29,6 +29,14 @@ module.exports = {
             let limit = typeof passedInLimit === "number" ? passedInLimit : Math.floor(interaction.options.getNumber("limit"));
 
             if (ownedChannel) {
+                if (!(ownedChannel.setmax ?? true)) {
+                    await interaction.reply({ 
+                        content: getLang(lang, "command_max_not_allowed", "This channel does not support setting a max"), 
+                        ephemeral: true 
+                    });
+                    return;
+                }
+
                 if (limit < 0) {
                     await interaction.reply({ 
                         content: getLang(lang, "command_max_greater_than_zero", "You must specify a limit greater than or equal to 0"), 
