@@ -30,7 +30,7 @@ const CHANNELS_COLLECTION = "channels";
  * @param {String} id The channel ID
  * @param {String} guildId The server ID the channel is associated with (does not change, used to mass delete)
  */
-async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", publicRoleId = "", defaultPublic = false, rename = false, nofilter = false) {
+async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", publicRoleId = "", defaultPublic = false, rename = false, nofilter = false, ping = true) {
     if (checkCache(id, "id", channels))
         removeFromCache(id, "id", channels);
     
@@ -45,6 +45,7 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         defaultPublic,
         rename,
         nofilter,
+        ping,
         createdOn: Firestore.Timestamp.now()
     });
 
@@ -57,7 +58,8 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         publicRoleId,
         defaultPublic,
         rename,
-        nofilter
+        nofilter,
+        ping
     }, channels);
 }
 
@@ -273,6 +275,27 @@ async function doesChannelHaveNoFilter(id) {
     return false;
 }
 
+async function doesChannelHavePing(id) {
+    let channel = checkCache(id, "id", channels);
+
+    if (channel)
+        return channel.ping ?? true;
+
+    var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
+    var doc = await ref.get();
+
+    if (doc.exists) {
+        var data = doc.data();
+
+        if (data) {
+            addToCache(data, channels);
+            return data.ping ?? true;
+        }
+    }
+
+    return true;
+}
+
 const clones = [];
 const CLONES_COLLECTION = "clones";
 
@@ -300,7 +323,7 @@ const CLONES_COLLECTION = "clones";
  * @param {String} guildId The server ID
  * @param {String} owner The current owner user ID
  */
-async function registerClone(claim, roleId, guildId, owner, permissions, publicPermissions = null, rename = false, nofilter = false) {
+async function registerClone(claim, roleId, guildId, owner, permissions, publicPermissions = null, rename = false, nofilter = false, ping = true) {
     var ref = await db.collection(CLONES_COLLECTION).doc(claim);
     await ref.set({
         id: claim,
@@ -311,6 +334,7 @@ async function registerClone(claim, roleId, guildId, owner, permissions, publicP
         publicPermissions,
         rename,
         nofilter,
+        ping,
         renameAttempts: [Date.now().valueOf()],
         createdOn: Firestore.Timestamp.now()
     });
@@ -324,6 +348,7 @@ async function registerClone(claim, roleId, guildId, owner, permissions, publicP
         publicPermissions,
         rename,
         nofilter,
+        ping,
         renameAttempts: [Date.now().valueOf()],
     }, clones);
 }
@@ -610,6 +635,7 @@ module.exports = {
     doesChannelStartPublic,
     doesChannelAllowRenaming,
     doesChannelHaveNoFilter,
+    doesChannelHavePing,
 
     registerClone,
     deleteClone,

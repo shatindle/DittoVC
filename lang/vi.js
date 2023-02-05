@@ -200,6 +200,8 @@ __Mod Commands__
     "command_register_param_rename_description": "Whether or not to allow users to rename the voice channel",
     "command_register_param_nofilter": "nofilter",
     "command_register_param_nofilter_description": "Turn off the word filter for channel names.  Default is false.  True is not recommended.",
+    "command_register_param_ping": "ping",
+    "command_register_param_ping_description": "Whether or not to ping users added to a channel.  Default is True.",
     "command_register_log_name": "Mod registered clone VC",
     "command_register_channel_must_be_voice": "VC parameter needs a voice channel",
     "command_register_name_too_long": "Name of the channel must be 28 characters or less.",
