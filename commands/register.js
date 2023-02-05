@@ -55,9 +55,9 @@ module.exports = {
                 .setDescriptionLocalizations(getLocalizations("command_register_param_nofilter_description", "Turn off the word filter for channel names.  Default is false.  True is not recommended.")))
         .addBooleanOption(option =>
             option.setName("ping")
-                .setNameLocalizations(getLocalizations("command_register_param_ping", "ping")
+                .setNameLocalizations(getLocalizations("command_register_param_ping", "ping"))
                 .setDescription("Whether or not to ping users added to a channel.  Default is True.")
-                .setDescriptionLocalizations(getLocalizations("command_register_param_ping_description", "Whether or not to ping users added to a channel.  Default is True.")))),
+                .setDescriptionLocalizations(getLocalizations("command_register_param_ping_description", "Whether or not to ping users added to a channel.  Default is True."))),
 	async execute(interaction) {
         try {
             const lang = interaction.guild.preferredLocale;
