@@ -18,6 +18,56 @@ Basically:
 
 https://user-images.githubusercontent.com/3068117/162594640-a34de634-cb75-4e42-8954-94fb9ac2bf7e.mp4
 
+## Self-hosting
+If you want to modify the bot code or want to change the profile picture of the bot, self-hosting is what you will be interested in.  The bot pretty easy to self host so long as you have a basic understanding of Node.js and Firebase.
+
+### System requirements
+
+The bot needs the following to function:
+- Node.js (at least version 16 as of this writing)
+- a [Cloud Firestore database (quickstart here)](https://firebase.google.com/docs/firestore/quickstart)
+- a [Discord bot token](https://discord.com/developers/docs/topics/oauth2)
+- your bot application ID
+- your bot token
+- a solid internet connection (ideally, you deploy it on a server)
+
+### Setting up the Cloud Firestore (firebase) database
+In Cloud Firebase, create a new project, then create a Firestore database in the project.  See the quickstart above for instructions on setting up Firestore.  Once you have a database, create a Service account via Project Settings > Service Accounts.  Set the type as Node.js and click "Generate new private key".  Name this file firebase.json, and place it in the root of the project.
+
+If you've never used Firestore before, the daily free tier is extremely generous.  Further, the bot does some caching to reduce the read operations required of Firestore, so unless you're deploying the bot to tons of hyper active servers that generate thousands of voice chats every day, you likely will never go beyond the free tier.
+
+### Setting of the config.json file
+Create a file called "config.json", and place it in the root of the project.  The file should have 2 keys in a JSON object: "clientId" and "token".
+
+The file should look like the following:
+```js
+{
+    "clientId": "YOUR_APPLICATION_ID_HERE",
+    "token": "YOUR_BOT_TOKEN_HERE"
+}
+```
+
+### Running the bot
+Install the node modules and run the bot:
+```sh
+npm install;
+node ./index.js;
+```
+
+Replace YOUR_APPLICATION_ID_HERE with your bot's application ID.  Replace YOUR_BOT_TOKEN_HERE with your bot token.
+
+## Production mode
+For testing purposes, it's ok to run the bot via node in the terminal.  It is recommended to run the bot via a process manager like [pm2](https://www.npmjs.com/package/pm2) in a production environment.  A sample setup is listed below in the root directory of the application:
+```sh
+pm2 start index.js --name "dittovc";
+pm2 save;
+```
+
+If you prefer running your applications with Docker, a DockerFile and sample docker-compose.yml file has been provided, though not tested since I use pm2 for my copy of the bot.  You will need to build the docker container manually.  The approximate code to do so should be:
+```sh
+sudo docker compose up -d --build
+```
+
 ## Channel Owner Commands
 /add user:username#0000 permissions:(All, Speak, or Listen)
 - Adds the user to the voice chat, defaults to all allowed permissions.

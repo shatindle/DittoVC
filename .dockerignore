@@ -1,0 +1,8 @@
+**/node_modules/
+.git
+config.json
+firebase.json
+privacy-policy.md
+testCleanup.js
+testLocalizations.js
+server-check.js
