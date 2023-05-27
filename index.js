@@ -380,8 +380,8 @@ __How to use DittoVC__
         try {
             logActivity(client, 
                 oldState.guild.id, 
-                getLang(lang, "vc_creation_permission_error_title", "Error creating Voice Clone"), 
-                getLang(lang, "vc_creation_permission_error_description", "<@%1$s> tried to create a VC using <#%2$s>, but the bot encountered this error before the channel was fully cloned: %3$s\n\nMake sure you have explicitly given the bot these permissions: %4$s", newState.id, newState.channelId, err.message, failingPermText));    
+                getLang(oldState.guild.preferredLocale, "vc_creation_permission_error_title", "Error creating Voice Clone"), 
+                getLang(oldState.guild.preferredLocale, "vc_creation_permission_error_description", "<@%1$s> tried to create a VC using <#%2$s>, but the bot encountered this error before the channel was fully cloned: %3$s\n\nMake sure you have explicitly given the bot these permissions: %4$s", newState.id, newState.channelId, err.message, failingPermText));    
         } catch (log_err) {
             console.log(`Unable to record VC creation error: ${log_err}`);
         }
