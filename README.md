@@ -19,7 +19,7 @@ Basically:
 https://user-images.githubusercontent.com/3068117/162594640-a34de634-cb75-4e42-8954-94fb9ac2bf7e.mp4
 
 ## Self-hosting
-If you want to modify the bot code or want to change the profile picture of the bot, self-hosting is what you will be interested in.  The bot pretty easy to self host so long as you have a basic understanding of Node.js and Firebase.
+If you want to modify the bot code or want to change the profile picture of the bot, self-hosting is what you will be interested in.  The bot is pretty easy to self host so long as you have a basic understanding of Node.js and Firebase.
 
 ### System requirements
 

@@ -292,7 +292,9 @@ __Cách sử dụng bot tạo phòng riêng__
 
     "command_menu_success": "Đã tạo menu thành công!",
     "channel_cleanup": "Dọn kênh",
-    "channel_cleanup_description": "Kênh '%1$s' đã được dọn dẹp"
+    "channel_cleanup_description": "Kênh '%1$s' đã được dọn dẹp",
+    "vc_creation_permission_error_title": "Error creating Voice Clone",
+    "vc_creation_permission_error_description": "<@%1$s> tried to create a VC using <#%2$s>, but the bot encountered this error before the channel was fully cloned: %3$s\n\nMake sure you have explicitly given the bot these permissions: %4$s"
 };
 
 // WARNING: DO NOT EDIT ANYTHING BELOW THIS LINE

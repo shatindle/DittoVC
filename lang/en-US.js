@@ -308,7 +308,9 @@ __How to use DittoVC__
 
     "command_menu_success": "Menu successfully created!",
     "channel_cleanup": "Channel Cleanup",
-    "channel_cleanup_description": "Channel '%1$s' has been cleaned up"
+    "channel_cleanup_description": "Channel '%1$s' has been cleaned up",
+    "vc_creation_permission_error_title": "Error creating Voice Clone",
+    "vc_creation_permission_error_description": "<@%1$s> tried to create a VC using <#%2$s>, but the bot encountered this error before the channel was fully cloned: %3$s\n\nMake sure you have explicitly given the bot these permissions: %4$s"
 
 };
 

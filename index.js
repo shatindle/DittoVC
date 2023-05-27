@@ -377,10 +377,14 @@ __How to use DittoVC__
         console.log(`Error in voiceStateUpdate: ${err}`);
         let failingPermText = Object.keys(failingPerms).join(", ");
 
-        logActivity(client, 
-            oldState.guild.id, 
-            "Error creating Voice Clone", // getLang(lang, "voicestateupdate_user_left_log_name", "User abandoned VC"), 
-            `${newState.id} tried to create a VC using ${newState.channelId}, but the bot encountered this error before the channel was fully cloned: ${err.message}\n\nMake sure you have explicitly given the bot these permissions: ${failingPermText}`);// getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> tried to create a VC, but the bot encountered this error %2$s before the channel was fully cloned", userId, abandonedChannelName));
+        try {
+            logActivity(client, 
+                oldState.guild.id, 
+                getLang(lang, "vc_creation_permission_error_title", "Error creating Voice Clone"), 
+                getLang(lang, "vc_creation_permission_error_description", "<@%1$s> tried to create a VC using <#%2$s>, but the bot encountered this error before the channel was fully cloned: %3$s\n\nMake sure you have explicitly given the bot these permissions: %4$s", newState.id, newState.channelId, err.message, failingPermText));    
+        } catch (log_err) {
+            console.log(`Unable to record VC creation error: ${log_err}`);
+        }
         
         // TODO: loop through each of the permissions and find out which one the bot doesn't have
 
