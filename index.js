@@ -92,6 +92,8 @@ const COOL_DOWN = 1000 * 30;
 // this is needed when multiple people join at the same time so we can know who gets what channel
 const currentClaims = {};
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 client.on("voiceStateUpdate", async (oldState, newState) => {
     let claim, clone;
 
@@ -213,6 +215,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     SEND_MESSAGES: true
                 };
                 
+                if ("548440972997033996" == guild.id) await sleep(5000);
+
                 await claim.permissionOverwrites.create(client.user.id, {
                     ...(currentPerms[client.user.id] ?? {}),
                     CONNECT: true,
@@ -375,12 +379,12 @@ __How to use DittoVC__
         }
     } catch (err) {
         console.log(`Error in voiceStateUpdate: ${err}`);
-        // if ("DiscordAPIError: Missing Access" === err.message) {
-            logActivity(client, 
-                oldState.guild.id, 
-                "Error creating Voice Clone", // getLang(lang, "voicestateupdate_user_left_log_name", "User abandoned VC"), 
-                `${newState.id} tried to create a VC using ${newState.channelId}, but the bot encountered this error before the channel was fully cloned: ${err.message}: ${err.stack}:\n\n${JSON.stringify(failingPerms)}`);// getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> tried to create a VC, but the bot encountered this error %2$s before the channel was fully cloned", userId, abandonedChannelName));
-        // }
+        let failingPermText = Object.keys(failingPerms).join(", ");
+
+        logActivity(client, 
+            oldState.guild.id, 
+            "Error creating Voice Clone", // getLang(lang, "voicestateupdate_user_left_log_name", "User abandoned VC"), 
+            `${newState.id} tried to create a VC using ${newState.channelId}, but the bot encountered this error before the channel was fully cloned: ${err.message}\n\nMake sure you have explicitly given the bot these permissions: ${failingPermText}`);// getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> tried to create a VC, but the bot encountered this error %2$s before the channel was fully cloned", userId, abandonedChannelName));
         
 
         // TODO: figure out at what point in the clone process we failed
