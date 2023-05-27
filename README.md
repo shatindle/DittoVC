@@ -2,7 +2,7 @@
 
 ## tl;dr
 
-If you're just interested in the invite link, you can invite the bot [here](https://discord.com/api/oauth2/authorize?client_id=940796178302378074&permissions=275178866704&scope=bot%20applications.commands).
+If you're just interested in the invite link, you can invite the bot [here](https://discord.com/api/oauth2/authorize?client_id=940796178302378074&permissions=275178867216&scope=bot%20applications.commands).
 
 ## How it works
 Basically:
