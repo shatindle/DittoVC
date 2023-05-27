@@ -367,7 +367,7 @@ __How to use DittoVC__
         console.log(`Error in voiceStateUpdate: ${err}`);
         if ("DiscordAPIError: Missing Access" === err.message) {
             logActivity(client, 
-                guild.id, 
+                oldState.guild.id, 
                 "Error creating Voice Clone", // getLang(lang, "voicestateupdate_user_left_log_name", "User abandoned VC"), 
                 `${newState.id} tried to create a VC using ${newState.channelId}, but the bot encountered this error before the channel was fully cloned: ${err.message}`);// getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> tried to create a VC, but the bot encountered this error %2$s before the channel was fully cloned", userId, abandonedChannelName));
         }
