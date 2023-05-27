@@ -95,6 +95,8 @@ const currentClaims = {};
 client.on("voiceStateUpdate", async (oldState, newState) => {
     let claim, clone;
 
+    let failingPerms = {};
+
     try {
         const lang = newState.guild.preferredLocale;
         const { channelId: leftChannelId, guild, member } = oldState;
@@ -202,6 +204,14 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                         t.deny.toArray().forEach(perm => currentPerms[t.id][perm] = false);
                     });
                 } catch {}
+                
+                failingPerms = {
+                    ...(currentPerms[client.user.id] ?? {}),
+                    CONNECT: true,
+                    STREAM: true,
+                    SPEAK: true,
+                    SEND_MESSAGES: true
+                };
                 
                 await claim.permissionOverwrites.create(client.user.id, {
                     ...(currentPerms[client.user.id] ?? {}),
@@ -369,7 +379,7 @@ __How to use DittoVC__
             logActivity(client, 
                 oldState.guild.id, 
                 "Error creating Voice Clone", // getLang(lang, "voicestateupdate_user_left_log_name", "User abandoned VC"), 
-                `${newState.id} tried to create a VC using ${newState.channelId}, but the bot encountered this error before the channel was fully cloned: ${err.message}: ${err.stack}`);// getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> tried to create a VC, but the bot encountered this error %2$s before the channel was fully cloned", userId, abandonedChannelName));
+                `${newState.id} tried to create a VC using ${newState.channelId}, but the bot encountered this error before the channel was fully cloned: ${err.message}: ${err.stack}:\n\n${JSON.stringify(failingPerms)}`);// getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> tried to create a VC, but the bot encountered this error %2$s before the channel was fully cloned", userId, abandonedChannelName));
         // }
         
 
