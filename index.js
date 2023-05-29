@@ -320,7 +320,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     }
 
                     if (channelAllowsRenaming) {
-                        instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_rename", "You can rename your voice channel to something else if you'd like! Use the `/rename` command to set the name of your voice channel.");
+                        instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_rename", "You can rename your voice channel to something else if you'd like! Use the `/name` command to set the name of your voice channel.");
                     }
 
                     instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_delete", "When you're done with your voice channel, use the `/delete` command to delete it. If you leave the voice channel while other people are in there, they can claim ownership of the voice channel using `/claim` and manage the channel themselves.");
