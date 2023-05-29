@@ -246,13 +246,11 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
 
     // TODO: translate these to vietnamese
     "voicestateupdate_how_to_use_dittovc_vc_created": "<@%1$s> You've created your own voice channel <#%2$s>!",
-    "voicestateupdate_how_to_use_dittovc_vc_is_public": "Your channel is currently public. Anyone can join your channel, but if you want to make it private simply run the /private command so that people can only join if you invite them via /add. If you change your mind, you can make it public again using /public.",
-    "voicestateupdate_how_to_use_dittovc_vc_is_private": "Your channel is currently private. To invite people to your channel, use the /add command and type the username of the user you want to invite. If you want anyone to be able to join your channel, you can make it public using /public. If you change your mind, you can make it private again using /private.",
-    "voicestateupdate_how_to_use_dittovc_vc_rename": "You can rename your voice channel to something else if you'd like! Use the /rename command to set the name of your voice channel.",
-    "voicestateupdate_how_to_use_dittovc_vc_max": "You can change the maximum number of users allowed to join your voice chat via /max and providing the number of users you want to allow. To unset the max users, run /max without providing a number or providing 0.",
-    "voicestateupdate_how_to_use_dittovc_vc_delete": "When you're done with your voice channel, use the /delete command to delete it. If you leave the voice channel while other people are in there, they can claim ownership of the voice channel using /claim and manage the channel themselves.",
-    "voicestateupdate_how_to_use_dittovc_vc_more_info": "To see the list of all commands the bots supports, run /info.",
-
+    "voicestateupdate_how_to_use_dittovc_vc_is_public": "Your channel is currently public. Anyone can join your channel, but if you want to make it private simply run the `/private` command so that people can only join if you invite them via `/add`. If you change your mind, you can make it public again using `/public`.",
+    "voicestateupdate_how_to_use_dittovc_vc_is_private": "Your channel is currently private. To invite people to your channel, use the `/add` command and type the username of the user you want to invite. If you want anyone to be able to join your channel, you can make it public using `/public`. If you change your mind, you can make it private again using `/private`.",
+    "voicestateupdate_how_to_use_dittovc_vc_rename": "You can rename your voice channel to something else if you'd like! Use the `/rename` command to set the name of your voice channel.",
+    "voicestateupdate_how_to_use_dittovc_vc_delete": "When you're done with your voice channel, use the `/delete` command to delete it. If you leave the voice channel while other people are in there, they can claim ownership of the voice channel using `/claim` and manage the channel themselves.",
+    "voicestateupdate_how_to_use_dittovc_vc_more_info": "To see the list of all commands the bots supports, run `/info`.",
 
     "voicestateupdate_user_joined_vc_log_name": "Người dùng đã tham gia VC",
     "voicestateupdate_user_joined_vc_log_description": "<@%1$s> đã tham gia %2$s",
