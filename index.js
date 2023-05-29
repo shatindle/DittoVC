@@ -310,39 +310,28 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     if (!instructionsChannel)
                         instructionsChannel = await client.channels.fetch(instructionsId);
 
-                    const tempInstructions = await instructionsChannel.send(
-                        getLang(lang, "voicestateupdate_how_to_use_dittovc",
-`<@%1$s>
-__How to use DittoVC__
-/info
-> See the detailed help message.
+                    // create instructions, issue https://github.com/shatindle/DittoVC/issues/38
+                    let instructionsText = getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_created", "<@%1$s> You've created your own voice channel <#%2$s>!", userId, claim.id);
 
-/add user:username#0000 permissions:(All, Speak, or Listen)
-> Adds the user to the voice chat, defaults to all allowed permissions.
+                    if (channelStartsPublic) {
+                        instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_is_public", "Your channel is currently public. Anyone can join your channel, but if you want to make it private simply run the /private command so that people can only join if you invite them via /add. If you change your mind, you can make it public again using /public.");
+                    } else {
+                        instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_is_private", "Your channel is currently private. To invite people to your channel, use the /add command and type the username of the user you want to invite. If you want anyone to be able to join your channel, you can make it public using /public. If you change your mind, you can make it private again using /private.");
+                    }
 
-/remove user:username#0000
-> Remove the user from the voice chat.
+                    if (channelAllowsRenaming) {
+                        instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_rename", "You can rename your voice channel to something else if you'd like! Use the /rename command to set the name of your voice channel.");
+                    }
 
-/public
-> Make your voice chat public.
+                    if (channelHasSetMax) {
+                        instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_max", "You can change the maximum number of users allowed to join your voice chat via /max and providing the number of users you want to allow. To unset the max users, run /max without providing a number or providing 0.");
+                    }
 
-/private
-> Make your voice chat private.
+                    instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_delete", "When you're done with your voice channel, use the /delete command to delete it. If you leave the voice channel while other people are in there, they can claim ownership of the voice channel using /claim and manage the channel themselves.");
 
-/max limit:number
-> Set a max number of users. 0 removes the limit. Still respects if the channel is public or private.
+                    instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_more_info", "To see the list of all commands the bots supports, run /info.");
 
-/name it:text
-> Give your voice chat a name.
-
-/claim
-> Take over ownership of a channel after the owner has left.
-
-/delete
-> Delete your owned voice chat.
-
-/region
-> Sets the region the voice chat is hosted in.`, userId));
+                    const tempInstructions = await instructionsChannel.send(instructionsText);
 
                     setTimeout(async function() {
                         try {
