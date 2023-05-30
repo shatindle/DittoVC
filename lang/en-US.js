@@ -130,6 +130,7 @@ __Mod Commands__
 
     // /max
     "command_max": "max",
+    "command_max_name": "Max",
     "command_max_description": "Make this channel limited to a certain number of users",
     "command_max_param_limit": "limit",
     "command_max_param_limit_description": "The maximum number of people you wish to join the voice chat",
@@ -154,12 +155,14 @@ __Mod Commands__
 
     // /private
     "command_private": "private",
+    "command_private_name": "Private",
     "command_private_description": "Make this channel private",
     "command_private_log_name": "User made VC private",
     "command_private_only_members_can_join": "Only members you invite can join <#%1$s>",
 
     // /public
     "command_public": "public",
+    "command_public_name": "Public",
     "command_public_description": "Make this channel public",
     "command_public_log_name": "User made VC public",
     "command_public_everyone_can_join": "Everyone can now join <#%1$s>",
