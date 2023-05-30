@@ -15,7 +15,13 @@ module.exports = {
                 .setDescription("The channel to make the command menu in")
                 .setDescriptionLocalizations(getLocalizations("command_menu_param_channel_description", "The channel to make the command menu in"))
                 .setRequired(true)
-                .addChannelTypes(Constants.ChannelTypes.GUILD_TEXT)),
+                .addChannelTypes(Constants.ChannelTypes.GUILD_TEXT))
+        .addStringOption(option => 
+            option.setName("instructions")
+                .setNameLocalizations(getLocalizations("command_menu_param_instructions"))
+                .setDescription("Override the default instructions")
+                .setDescriptionLocalizations(getLocalizations("command_menu_param_instructions_description", "Override the default instructions. If nothing is provided, the following will be used: Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more."))
+                .setRequired(false)),
 	async execute(
         /** @type {CommandInteraction} */
         interaction) {
@@ -28,6 +34,11 @@ module.exports = {
                 getLang(lang, "command_user_used", "<@%1$s> used:\n %2$s", interaction.user.id, interaction.toString()));
 
             const { id } = interaction.options.getChannel("channel");
+            let instructions = interaction.options.getString("instructions");
+
+            if (!instructions) {
+                instructions = getLang(lang, "command_menu_click_here_to_control", "Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more.");
+            }
 
             const channel = await interaction.guild.channels.fetch(id);
 
@@ -78,7 +89,7 @@ module.exports = {
                 );
 
             await channel.send({ 
-                content: getLang(lang, "command_menu_click_here_to_control", "Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more."), 
+                content: instructions, 
                 components: [row]
             });
 

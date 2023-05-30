@@ -267,6 +267,8 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
     "command_menu_description": "Create a static controls menu",
     "command_menu_param_channel": "channel",
     "command_menu_param_channel_description": "The channel to make the command menu in",
+    "command_menu_param_instructions": "instructions",
+    "command_menu_param_instructions_description": "Override the default instructions",
     "command_menu_log_name": "Mod created control menu",
     "command_menu_click_here_to_control": "Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more.",
 

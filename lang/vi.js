@@ -259,6 +259,8 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
     "voicestateupdate_user_joined_vc_log_description": "<@%1$s> đã tham gia %2$s",
 
     "command_menu": "menu",
+    "command_menu_param_instructions": "instructions",
+    "command_menu_param_instructions_description": "Override the default instructions",
     "command_menu_description": "Tạo menu điều khiển tĩnh",
     "command_menu_param_channel": "channel",
     "command_menu_param_channel_description": "Kênh để tạo menu lệnh trong",
