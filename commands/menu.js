@@ -63,15 +63,15 @@ module.exports = {
                 .addComponents(
                     new MessageButton()
                         .setCustomId("public")
-                        .setLabel(getLang(lang, "command_public", "public"))
+                        .setLabel(getLang(lang, "command_public_name", "Public"))
                         .setStyle("PRIMARY"),
                     new MessageButton()
                         .setCustomId("private")
-                        .setLabel(getLang(lang, "command_private", "private"))
+                        .setLabel(getLang(lang, "command_private_name", "Private"))
                         .setStyle("SECONDARY"),
                     new MessageButton()
                         .setCustomId("max")
-                        .setLabel(getLang(lang, "command_max", "max"))
+                        .setLabel(getLang(lang, "command_max_name", "Max"))
                         .setStyle("DANGER")
 
                     // add user and remove user can't be done this way... yet...

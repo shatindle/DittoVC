@@ -123,6 +123,7 @@ __Mod Commands__
 
     // /max
     "command_max": "max",
+    "command_max_name": "Max",
     "command_max_description": "Đặt kênh này giới hạn ở một số lượng người dùng nhất định",
     "command_max_param_limit": "limit",
     "command_max_param_limit_description": "Số người tối đa bạn muốn tham gia trò chuyện thoại",
@@ -147,12 +148,14 @@ __Mod Commands__
 
     // /private
     "command_private": "private",
+    "command_private_name": "Private",
     "command_private_description": "Đặt kênh này ở chế độ riêng tư",
     "command_private_log_name": "Người dùng đã đặt VC ở chế độ riêng tư",
     "command_private_only_members_can_join": "Chỉ những thành viên bạn mời mới có thể tham gia <#%1$s>",
 
     // /public
     "command_public": "public",
+    "command_public_name": "Public",
     "command_public_description": "Đặt kênh này ở chế độ công khai",
     "command_public_log_name": "Người dùng đã đặt VC ở chế độ công khai",
     "command_public_everyone_can_join": "Mọi người hiện có thể tham gia <#%1$s>",
