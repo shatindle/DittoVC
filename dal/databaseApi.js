@@ -102,7 +102,7 @@ async function loadChannels() {
 /**
  * @description Determine if a channel is intended to be cloned
  * @param {String} id The channel ID
- * @returns {Boolean} Whether or not the channel is cloneable
+ * @returns {Promise<Boolean>} Whether or not the channel is cloneable
  */
 async function isChannelClonable(id) {
     let channel = checkCache(id, "id", channels);

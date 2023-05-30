@@ -115,17 +115,18 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
             const channelName = currentChannel.name;
             const memberCount = currentChannel.members.size;
 
-            if (memberCount === 0) {
-                if (await getClone(leftChannelId)){
+            // only log activity for channels we manage
+            if (await getClone(leftChannelId)) {
+                if (memberCount === 0) {
                     await currentChannel.delete();
                     await deleteClone(leftChannelId);
                 }
-            }
 
-            await logActivity(client, 
-                guild.id, 
-                getLang(lang, "voicestateupdate_user_left_log_name", "User left VC"), 
-                getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s", userId, channelName));
+                await logActivity(client, 
+                    guild.id, 
+                    getLang(lang, "voicestateupdate_user_left_log_name", "User left VC"), 
+                    getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s", userId, channelName));
+            }
         }
 
         if (joinedChannelId) {
@@ -352,10 +353,13 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                         getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s before the channel was fully cloned", userId, abandonedChannelName));
                 }
             } else {
-                await logActivity(client, 
-                    guild.id, 
-                    getLang(lang, "voicestateupdate_user_joined_vc_log_name", "User joined VC"), 
-                    getLang(lang, "voicestateupdate_user_joined_vc_log_description", "<@%1$s> joined %2$s", userId, claim.name));
+                // only log activity for channels we manage
+                if (await getClone(joinedChannelId)) {
+                    await logActivity(client, 
+                        guild.id, 
+                        getLang(lang, "voicestateupdate_user_joined_vc_log_name", "User joined VC"), 
+                        getLang(lang, "voicestateupdate_user_joined_vc_log_description", "<@%1$s> joined %2$s", userId, claim.name));
+                }
             }
         }
     } catch (err) {
