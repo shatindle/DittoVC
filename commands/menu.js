@@ -20,7 +20,25 @@ module.exports = {
             option.setName("instructions")
                 .setNameLocalizations(getLocalizations("command_menu_param_instructions"))
                 .setDescription("Override the default instructions")
-                .setDescriptionLocalizations(getLocalizations("command_menu_param_instructions_description", "Override the default instructions. If nothing is provided, the following will be used: Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more."))
+                .setDescriptionLocalizations(getLocalizations("command_menu_param_instructions_description", "Override the default instructions"))
+                .setRequired(false))
+        .addStringOption(option => 
+            option.setName("public")
+                .setNameLocalizations(getLocalizations("command_menu_param_public"))
+                .setDescription("Override the default Public button text")
+                .setDescriptionLocalizations(getLocalizations("command_menu_param_public_description", "Override the default Public button text"))
+                .setRequired(false))
+        .addStringOption(option => 
+            option.setName("private")
+                .setNameLocalizations(getLocalizations("command_menu_param_private"))
+                .setDescription("Override the default Private button text")
+                .setDescriptionLocalizations(getLocalizations("command_menu_param_private_description", "Override the default Private button text"))
+                .setRequired(false))
+        .addStringOption(option => 
+            option.setName("max")
+                .setNameLocalizations(getLocalizations("command_menu_param_max"))
+                .setDescription("Override the default Max button text")
+                .setDescriptionLocalizations(getLocalizations("command_menu_param_max_description", "Override the default Max button text"))
                 .setRequired(false)),
 	async execute(
         /** @type {CommandInteraction} */
@@ -35,10 +53,14 @@ module.exports = {
 
             const { id } = interaction.options.getChannel("channel");
             let instructions = interaction.options.getString("instructions");
+            let public = interaction.options.getString("public");
+            let private = interaction.options.getString("private");
+            let max = interaction.options.getString("max");
 
-            if (!instructions) {
-                instructions = getLang(lang, "command_menu_click_here_to_control", "Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more.");
-            }
+            if (!instructions) instructions = getLang(lang, "command_menu_click_here_to_control", "Join a new voice chat, then use this menu to control it! More commands are available via slash commands. Do /info to learn more.");
+            if (!public) public = getLang(lang, "command_public_name", "Public");
+            if (!private) private = getLang(lang, "command_private_name", "Private");
+            if (!max) max = getLang(lang, "command_max_name", "Max");
 
             const channel = await interaction.guild.channels.fetch(id);
 
@@ -74,15 +96,15 @@ module.exports = {
                 .addComponents(
                     new MessageButton()
                         .setCustomId("public")
-                        .setLabel(getLang(lang, "command_public_name", "Public"))
+                        .setLabel(public)
                         .setStyle("PRIMARY"),
                     new MessageButton()
                         .setCustomId("private")
-                        .setLabel(getLang(lang, "command_private_name", "Private"))
+                        .setLabel(private)
                         .setStyle("SECONDARY"),
                     new MessageButton()
                         .setCustomId("max")
-                        .setLabel(getLang(lang, "command_max_name", "Max"))
+                        .setLabel(max)
                         .setStyle("DANGER")
 
                     // add user and remove user can't be done this way... yet...
