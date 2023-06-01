@@ -324,7 +324,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                         instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_rename", "You can rename your voice channel to something else if you'd like! Use the `/name` command to set the name of your voice channel.");
                     }
 
-                    instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_delete", "When you're done with your voice channel, use the `/delete` command to delete it. If you leave the voice channel while other people are in there, they can claim ownership of the voice channel using `/claim` and manage the channel themselves.");
+                    instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_delete", "When you're done with your voice channel, use the `/delete` command to delete it. If you leave the voice channel while other people are in there, they can claim ownership of the voice channel using `/claim` and manage the channel themselves. Alternatively, you can give it to someone else before leaving using the `/give` command.");
 
                     instructionsText += "\n\n" + getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_more_info", "To see the list of all commands the bots supports, run `/info`.");
 
