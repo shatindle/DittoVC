@@ -295,7 +295,19 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
     "channel_cleanup": "Channel Cleanup",
     "channel_cleanup_description": "Channel '%1$s' has been cleaned up",
     "vc_creation_permission_error_title": "Error creating Voice Clone",
-    "vc_creation_permission_error_description": "<@%1$s> tried to create a VC using <#%2$s>, but the bot encountered this error before the channel was fully cloned: %3$s\n\nMake sure you have explicitly given the bot these permissions: %4$s"
+    "vc_creation_permission_error_description": "<@%1$s> tried to create a VC using <#%2$s>, but the bot encountered this error before the channel was fully cloned: %3$s\n\nMake sure you have explicitly given the bot these permissions: %4$s",
+
+    // /give
+    "command_give": "give",
+    "command_give_description": "Transfer ownership of your voice chat to someone else in your voice chat",
+    "command_give_param_to": "to",
+    "command_give_param_to_description": "The user you would like to be the new owner of your voice channel",
+    "command_give_log_name": "User tried to give their VC to someone else",
+    "command_give_target_not_in_server": "The user you are trying to give ownership to must be in the server",
+    "command_give_already_owner": "You cannot give a channel you own to yourself",
+    "command_give_bot_error": "You cannot give ownership of your voice channel to a bot",
+    "command_give_you_are_now_owner": "<@%1$s> has been transferred <@%2$s>'s voice channel",
+    "command_give_you_must_be_in_voice_chat": "You must own a voice channel to transfer it to someone else"
 
 };
 
