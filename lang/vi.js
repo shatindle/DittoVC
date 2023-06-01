@@ -302,8 +302,9 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
     "command_give_already_owner": "You cannot give a channel you own to yourself",
     "command_give_bot_error": "You cannot give ownership of your voice channel to a bot",
     "command_give_you_are_now_owner": "<@%1$s> has been transferred <@%2$s>'s voice channel",
-    "command_give_you_must_be_in_voice_chat": "You must own a voice channel to transfer it to someone else"
-    
+    "command_give_you_must_be_in_voice_chat": "You must own a voice channel to transfer it to someone else",
+    "command_give_target_not_in_vc": "The user you are trying to give ownership to is not in the voice channel you own"
+
 };
 
 // WARNING: DO NOT EDIT ANYTHING BELOW THIS LINE
