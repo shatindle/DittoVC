@@ -81,7 +81,7 @@ const text = {
 > Adds the user to the voice chat, defaults to all allowed permissions.
 
 /remove user:username#0000
-> Remove the user from the voice chat.
+> Prevents a user from joining the voice chat and removes them from the voice chat if they are currently in it.
 
 /public
 > Make your voice chat public.
@@ -229,7 +229,7 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
 
     // /remove
     "command_remove": "remove",
-    "command_remove_description": "Remove a user from this channel",
+    "command_remove_description": "Remove and block a user from this channel",
     "command_remove_param_user": "user",
     "command_remove_param_user_description": "The user you would like remove from this channel",
     "command_remove_log_name": "User removed from VC",
