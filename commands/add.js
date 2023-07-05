@@ -49,9 +49,6 @@ module.exports = {
             const guildId = interaction.guild.id;
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
 
-            // override with the user's preferred language
-            if (interaction.member.user.locale) lang = interaction.member.user.locale;
-    
             if (invitedUser.bot) {
                 await interaction.reply({ 
                     content: getLang(lang, "command_add_bot_error", "Bots cannot be invited to voice chat"), 
@@ -109,9 +106,6 @@ module.exports = {
                     SEND_MESSAGES: perms.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1
                 });
 
-                // override with the target user's preferred language
-                if (invitedUser.locale) lang = invitedUser.locale;
-                
                 await interaction.reply({ 
                     content: getLang(lang, "command_add_user_can_join", "<@%1$s> can now join <#%2$s>", invitedUser.id, ownedChannel.id),
                     ephemeral: !(ownedChannel.ping ?? true)
