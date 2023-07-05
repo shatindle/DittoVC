@@ -1,4 +1,4 @@
-const { Permissions } = require("discord.js");
+const { Permissions, CommandInteraction } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getOwnedChannel, deleteClone } = require("../dal/databaseApi");
 const allowedPermissions = require("../logic/permissionsLogic");
@@ -29,9 +29,14 @@ module.exports = {
                     { name: "Text", value: "send_messages", name_localizations: getLocalizations("command_add_param_permissions_option_text", "Text") },
                     { name: "Listen", value: "listen", name_localizations: getLocalizations("command_add_param_permissions_option_listen", "Listen") }
                 )),
+    /**
+     * 
+     * @param {CommandInteraction} interaction 
+     * @returns 
+     */
 	async execute(interaction) {
         try {
-            const lang = interaction.guild.preferredLocale;
+            let lang = interaction.guild.preferredLocale;
 
             await logActivity(
                 interaction.client, 
@@ -43,6 +48,9 @@ module.exports = {
             const request = interaction.options.getString("permissions");
             const guildId = interaction.guild.id;
             const ownedChannel = await getOwnedChannel(interaction.member.user.id, guildId);
+
+            // override with the user's preferred language
+            if (interaction.member.user.locale) lang = interaction.member.user.locale;
     
             if (invitedUser.bot) {
                 await interaction.reply({ 
@@ -100,6 +108,9 @@ module.exports = {
                     SPEAK: perms.allow.indexOf(Permissions.FLAGS.SPEAK) > -1,
                     SEND_MESSAGES: perms.allow.indexOf(Permissions.FLAGS.SEND_MESSAGES) > -1
                 });
+
+                // override with the target user's preferred language
+                if (invitedUser.locale) lang = invitedUser.locale;
                 
                 await interaction.reply({ 
                     content: getLang(lang, "command_add_user_can_join", "<@%1$s> can now join <#%2$s>", invitedUser.id, ownedChannel.id),
