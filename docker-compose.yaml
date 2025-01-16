@@ -1,10 +1,11 @@
 version: '3'
 
 services:
-  dittovc-bot:
+  dittovc:
     build: 
       context: .
       dockerfile: Dockerfile
+    container_name: bot
     restart: unless-stopped
     networks:
       - dittovc-bot-network
