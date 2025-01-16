@@ -5,7 +5,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    container_name: bot
+    container_name: dittovc
     restart: unless-stopped
     networks:
       - dittovc-bot-network
