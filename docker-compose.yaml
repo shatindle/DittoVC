@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  dittovc-bot:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - dittovc-bot-network
+    volumes:
+      - ./config.json:/home/node/app/config.json:ro
+      - ./firebase.json:/home/node/app/firebase.json:ro
+
+networks:
+  dittovc-bot-network:

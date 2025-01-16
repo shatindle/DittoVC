@@ -1,8 +1,9 @@
-**/node_modules/
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
 .git
+.gitignore
 config.json
+package-lock.json
 firebase.json
-privacy-policy.md
-testCleanup.js
-testLocalizations.js
-server-check.js

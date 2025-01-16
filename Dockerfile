@@ -15,6 +15,6 @@ USER node
 COPY --chown=node:node . .
 
 RUN npm install
-RUN npm audit fix
+RUN { npm audit fix || true; }
 
 ENTRYPOINT ["node", "index.js"]
