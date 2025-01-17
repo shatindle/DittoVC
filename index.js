@@ -1,3 +1,15 @@
+// Added backup logging to investigate when DittoVC crashes
+const process = require('node:process');
+
+process.on('uncaughtExceptionMonitor', (err, origin) => {
+    console.error("***CRITICAL ERROR***");
+    console.error("Error:");
+    console.error(err);
+    console.error("Origin:");
+    console.error(origin);
+    console.error("***QUITTING***");
+});
+
 const fs = require('fs');
 const { Client, Collection, Intents, Permissions } = require('discord.js');
 const { token } = require('./config.json');

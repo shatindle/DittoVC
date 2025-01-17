@@ -20,16 +20,8 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      
       # Runs a set of commands using the runners shell
       - name: Build and deploy the application
         run: |
-          pm2 stop dittovc
-          cp -r $GITHUB_WORKSPACE/* /home/sha_tindle/repos/DittoVC
-          rm -rf /home/sha_tindle/repos/DittoVC/node_modules
-          cd /home/sha_tindle/repos/DittoVC
-          npm install
-          npm audit fix || true
-          pm2 restart dittovc
+          git -C /var/repos/dittovc pull
+          bash /var/dockerstart/dittovc.sh
