@@ -4,7 +4,8 @@ const {
     deleteClone,
     monitor,
     addressChanges,
-    unregisterChannel
+    unregisterChannel,
+    unregisterLogs
 } = require("../dal/databaseApi");
 const logActivity = require('./logActivity');
 const { getLang } = require("../lang");
@@ -77,12 +78,44 @@ async function cleanRegisters(client, channelId, guildId) {
     }
 }
 
+/**
+ * 
+ * @param {Client} client 
+ * @param {*} channelId 
+ */
+async function cleanLogs(client, channelId, guildId) {
+    let guild, channel;
+    try {
+        guild = await client.guilds.fetch(guildId);
+        channel = await client.channels.fetch(channelId);
+        // all that we care about is that the channel exists.  If it does, move on.
+        console.log(`Bot is in guild ${guildId} and log channel ${channelId} is still valid`);
+    } catch (err) {
+        try {
+            if (guild) {
+                if (err.message === "Unknown Channel") {
+                    // channel is dead, get rid of it
+                    await unregisterLogs(guildId);
+                }
+            } else {
+                console.log(`Bot is no longer in guild ${guildId}`);
+            }
+
+            
+        } catch (err2) {
+            console.log(`Error in register channel cleanup - 2nd error: ${err2.toString()}`);
+        }
+    }
+}
+
 const cloneList = {};
 const registeredChannelList = {};
+const logChannelList = {};
 
 async function setupListeners() {
     monitor("clones", (changes) => addressChanges(changes, cloneList));
     monitor("channels", (changes) => addressChanges(changes, registeredChannelList));
+    monitor("logs", (changes) => addressChanges(changes, logChannelList));
 }
 
 async function pruneClones(client) {
@@ -105,9 +138,20 @@ async function pruneRegisters(client) {
     }
 }
 
+async function pruneLogs(client) {
+    const local = {...logChannelList};
+
+    for (let register of Object.values(local)) {
+        if (register && register.channelId) {
+            await cleanLogs(client, register.channelId, register.id);
+        }
+    }
+}
+
 module.exports = {
     cleanClone,
     setupListeners,
     pruneClones,
-    pruneRegisters
+    pruneRegisters,
+    pruneLogs
 }

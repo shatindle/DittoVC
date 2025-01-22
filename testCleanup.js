@@ -3,8 +3,10 @@ const { token } = require('./config.json');
 const { 
     pruneClones, 
     pruneRegisters,
+    pruneLogs,
     setupListeners 
 } = require("./logic/channelCleanup");
+const { loadAllLogChannels } = require('./dal/databaseApi');
 
 const client = new Client({ 
     intents: [
@@ -16,7 +18,8 @@ const client = new Client({
 setupListeners();
 
 client.once('ready', async () => {
-    setTimeout(() => pruneRegisters(client), 5000);
+    await loadAllLogChannels();
+    setTimeout(() => pruneLogs(client), 5000);
      //await pruneClones(client);
     console.log("ready!");
 });

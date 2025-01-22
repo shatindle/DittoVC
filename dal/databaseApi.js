@@ -512,9 +512,29 @@ const LOGS_COLLECTION = "logs";
     };
 }
 
+/**
+ * @description Unregister a channel for logging
+ * @param {String} id The channel ID
+ */
+async function unregisterLogs(guildId) {
+    if (guildId !== undefined) {
+        const ref = await db.collection(LOGS_COLLECTION).doc(guildId);
+        const doc = await ref.get();
+
+        if (doc.exists) {
+            await ref.delete();
+        }
+
+        if (logs[guildId]) delete logs[guildId];
+    }
+}
+
 async function loadAllLogChannels() {
     var ref = await db.collection(LOGS_COLLECTION);
     var docs = await ref.get();
+
+    // clear this object before we reload it
+    Object.keys(logs).forEach(key => delete logs[key]);
 
     if (docs.size > 0) {
         docs.forEach(e => {
@@ -672,6 +692,7 @@ module.exports = {
     setChannelOwner,
 
     registerLogs,
+    unregisterLogs,
     loadAllLogChannels,
     getLogChannel,
 
