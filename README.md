@@ -47,6 +47,18 @@ The file should look like the following:
 }
 ```
 
+### Deploying the slash commands
+The bot must do a one time registration of the commands available to the users.  There is a separate helper script to do that in the root of the project.
+
+Run the following command once:
+```sh
+node ./deploy-commands.js
+```
+
+That will make the slash commands available in Discord.  You would only need to run it again if the slash commands ever change.
+
+NOTE: this helper script is based on version 9 of the Discord API.  If Discord deprecates or deletes that version, the script will need work.  But it works as of this writing.
+
 ### Running the bot
 Install the node modules and run the bot:
 ```sh
