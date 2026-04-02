@@ -379,6 +379,9 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
         let failingPermText = Object.keys(failingPerms).join(", ");
 
         try {
+            // if channel creation failed and the failingPermText is blank, the category is probably the problem
+            if (!failingPermText) failingPermText = "CATEGORY: MANAGE_CHANNEL";
+
             logActivity(client, 
                 oldState.guild.id, 
                 getLang(oldState.guild.preferredLocale, "vc_creation_permission_error_title", "Error creating Voice Clone"), 
