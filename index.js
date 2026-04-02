@@ -380,7 +380,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
         try {
             // if channel creation failed and the failingPermText is blank, the category is probably the problem
-            if (!failingPermText) failingPermText = "CATEGORY: MANAGE_CHANNEL";
+            if (!failingPermText) failingPermText = "\nCATEGORY: MANAGE_CHANNEL";
 
             logActivity(client, 
                 oldState.guild.id, 
