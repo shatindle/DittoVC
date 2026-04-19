@@ -150,17 +150,17 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
             // the user joined a channel
             if (await isChannelClonable(joinedChannelId)) {
-                const instructionsId = await getChannelInstructionsDestination(joinedChannelId);
+                const instructions = await getChannelInstructionsDestination(joinedChannelId);
                 let cooldownTimeRemaining = isCooldownInEffect(userId, guild.id, COOL_DOWN);
 
                 if (cooldownTimeRemaining) {
                     const bootMember = await claim.guild.members.fetch(userId);
 
-                    if (instructionsId) {
-                        var instructionsChannel = client.channels.cache.get(instructionsId);
+                    if (instructions) {
+                        var instructionsChannel = client.channels.cache.get(instructions.id);
 
                         if (!instructionsChannel)
-                            instructionsChannel = await client.channels.fetch(instructionsId);
+                            instructionsChannel = await client.channels.fetch(instructions.id);
                         
                         var response = await instructionsChannel.send(
                             getLang(lang, "voicestateupdate_rate_limited", "<@%1$s> please wait a few minutes before trying to create a new voice chat", userId));
@@ -306,7 +306,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter, channelHasPing, channelHasSetMax);
                 } else {
                     await registerClone(claim.id, roleId, guild.id, userId, permissions, publicPermissions, channelAllowsRenaming, channelHasNoFilter, channelHasPing, channelHasSetMax);
-                    await registerChannel(clone.id, guild.id, prefix, instructionsId, roleId, publicRoleId, channelStartsPublic, channelAllowsRenaming, channelHasNoFilter, channelHasPing, channelHasSetMax);
+                    await registerChannel(clone.id, guild.id, prefix, instructions.id, roleId, publicRoleId, channelStartsPublic, channelAllowsRenaming, channelHasNoFilter, channelHasPing, channelHasSetMax, instructions.preferSelf);
                     await unregisterChannel(claim.id);
                     // await clone.edit({ position: newState.channel.position });
                     await clone.edit({ position: 0 }); // just move the channel to the top of the list
@@ -317,11 +317,12 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     getLang(lang, "voicestateupdate_user_created_vc_log_name", "User created VC"), 
                     getLang(lang, "voicestateupdate_user_created_vc_log_description", "<@%1$s> created %2$s", userId, newName));
 
-                if (instructionsId) {
-                    var instructionsChannel = client.channels.cache.get(instructionsId);
+                if (instructions) {
+                    const instructionsChannelToUse = instructions.preferSelf ? claim.id : instructions.id;
+                    var instructionsChannel = client.channels.cache.get(instructionsChannelToUse);
 
                     if (!instructionsChannel)
-                        instructionsChannel = await client.channels.fetch(instructionsId);
+                        instructionsChannel = await client.channels.fetch(instructionsChannelToUse);
 
                     // create instructions, issue https://github.com/shatindle/DittoVC/issues/38
                     let instructionsText = getLang(lang, "voicestateupdate_how_to_use_dittovc_vc_created", "<@%1$s> You've created your own voice channel <#%2$s>!", userId, claim.id);

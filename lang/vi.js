@@ -207,6 +207,8 @@ __Mod Commands__
     "command_register_param_ping_description": "Whether or not to ping users added to a channel.  Default is True.",
     "command_register_param_setmax": "setmax",
     "command_register_param_setmax_description": "Allow users to adjust the max number of users in a channel.  Default is True.",
+    "command_register_param_instructions": "instructions",
+    "command_register_param_instructions_description": "Include instructions in the claimed channel. Default is False.",
     "command_register_log_name": "Mod registered clone VC",
     "command_register_channel_must_be_voice": "VC parameter needs a voice channel",
     "command_register_name_too_long": "Name of the channel must be 28 characters or less.",

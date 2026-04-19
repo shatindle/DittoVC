@@ -30,7 +30,7 @@ const CHANNELS_COLLECTION = "channels";
  * @param {String} id The channel ID
  * @param {String} guildId The server ID the channel is associated with (does not change, used to mass delete)
  */
-async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", publicRoleId = "", defaultPublic = false, rename = false, nofilter = false, ping = true, setmax = true) {
+async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instructionsId = "", roleId = "", publicRoleId = "", defaultPublic = false, rename = false, nofilter = false, ping = true, setmax = true, preferSelf = false) {
     if (checkCache(id, "id", channels))
         removeFromCache(id, "id", channels);
     
@@ -47,6 +47,7 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         nofilter,
         ping,
         setmax,
+        preferSelf,
         createdOn: Firestore.Timestamp.now()
     });
 
@@ -61,7 +62,8 @@ async function registerChannel(id, guildId, prefix = "Voice Chat {count}", instr
         rename,
         nofilter,
         ping,
-        setmax
+        setmax,
+        preferSelf
     }, channels);
 }
 
@@ -155,7 +157,10 @@ async function getChannelInstructionsDestination(id) {
     let channel = checkCache(id, "id", channels);
 
     if (channel)
-        return channel.instructionsId;
+        return {
+            id: channel.instructionsId,
+            preferSelf: channel.preferSelf === true
+        };
 
     var ref = await db.collection(CHANNELS_COLLECTION).doc(id);
     var doc = await ref.get();
@@ -165,7 +170,10 @@ async function getChannelInstructionsDestination(id) {
 
         if (data) {
             addToCache(data, channels);
-            return data.instructionsId;
+            return {
+                id: data.instructionsId,
+                preferSelf: data.preferSelf === true
+            };
         }
     }
 

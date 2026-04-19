@@ -62,7 +62,12 @@ module.exports = {
             option.setName("setmax")
                 .setNameLocalizations(getLocalizations("command_register_param_setmax", "setmax"))
                 .setDescription("Allow users to adjust the max number of users in a channel.  Default is True.")
-                .setDescriptionLocalizations(getLocalizations("command_register_param_setmax_description", "Allow users to adjust the max number of users in a channel.  Default is True."))),
+                .setDescriptionLocalizations(getLocalizations("command_register_param_setmax_description", "Allow users to adjust the max number of users in a channel.  Default is True.")))
+        .addBooleanOption(option =>
+            option.setName("instructions")
+                .setNameLocalizations(getLocalizations("command_register_param_instructions", "instructions"))
+                .setDescription("Include instructions in the claimed channel. Default is False.")
+                .setDescriptionLocalizations(getLocalizations("command_register_param_instructions_description", "Include instructions in the claimed channel. Default is False."))),
 	async execute(interaction) {
         try {
             const lang = interaction.guild.preferredLocale;
@@ -103,6 +108,7 @@ module.exports = {
             const nofilter = interaction.options.getBoolean("nofilter") === true;
             const ping = interaction.options.getBoolean("ping") ?? true;
             const setmax = interaction.options.getBoolean("setmax") ?? true;
+            const preferSelf = interaction.options.getBoolean("instructions") ?? false;
 
             if (!privateRole)
                 privateRole = interaction.guild.roles.everyone;
@@ -132,7 +138,8 @@ module.exports = {
                 rename,
                 nofilter,
                 ping,
-                setmax);
+                setmax,
+                preferSelf);
     
             let content = getLang(lang, "command_register_info",
 `Registered <#%1$s> for cloning.
