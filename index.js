@@ -98,6 +98,25 @@ function isNumber(val) {
     return /^\d+$/.test(val);
 }
 
+/**
+ * 
+ * @param {string | number} n 
+ * @returns 
+ */
+const pad = (n) => n.toString().padStart(2, '0');
+
+/**
+ * 
+ * @param {Date} date 
+ */
+const getDateString = (date) => 
+    date.getFullYear().toString().slice(-2) + 
+        pad(date.getMonth() + 1) + 
+        pad(date.getDate()) + 
+        pad(date.getHours()) + 
+        pad(date.getMinutes()) + 
+        pad(date.getSeconds());
+
 // how long after a user creates a VC should they wait before they're allowed to make a new one
 const COOL_DOWN = 1000 * 30;
 
@@ -273,30 +292,43 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
                 const prefixCountPosition = prefix.indexOf("{count}");
                 let number = 1;
-                let allNumbers = [];
-                for (var vc of voiceChannels) {
-                    if (prefixCountPosition > -1) {
-                        let currentNumber = "";
-                        for (var i = prefixCountPosition; i < vc.length; i++) {
-                            if (isNumber(vc[i]))
-                                currentNumber += vc[i];
-                            else
-                                break;
-                        }
 
-                        if (currentNumber && parseInt(currentNumber) > 0) {
-                            allNumbers.push(parseInt(currentNumber));
+                // use the date format going forward - we limit to 22 custom characters when channels now support 100 characters
+                // so just go with it...
+                number = getDateString(new Date());
+                
+                /*
+                // bring this back if we ever increase the max length of the channel name beyond 22 custom characters
+                if (prefix.split("{count}").length - 1 === 1 && prefix.replace("{count}", "").length < 22) {
+                    // use the date format
+                    number = getDateString(new Date());
+                } else {
+                    let allNumbers = [];
+                    for (var vc of voiceChannels) {
+                        if (prefixCountPosition > -1) {
+                            let currentNumber = "";
+                            for (var i = prefixCountPosition; i < vc.length; i++) {
+                                if (isNumber(vc[i]))
+                                    currentNumber += vc[i];
+                                else
+                                    break;
+                            }
+
+                            if (currentNumber && parseInt(currentNumber) > 0) {
+                                allNumbers.push(parseInt(currentNumber));
+                            }
+                        }
+                    }
+
+                    allNumbers.sort((a, b) => a-b);
+
+                    for (var num of allNumbers) {
+                        if (number === num) {
+                            number++;
                         }
                     }
                 }
-
-                allNumbers.sort((a, b) => a-b);
-
-                for (var num of allNumbers) {
-                    if (number === num) {
-                        number++;
-                    }
-                }
+                */
 
                 const newName = prefix.replace("{count}", number);
                 await claim.setName(newName);
