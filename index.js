@@ -291,18 +291,14 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 const voiceChannels = clone.guild.channels.cache.filter(c => c.type === "GUILD_VOICE" &&  c.parentId === clone.parentId).map(v => v.name);
 
                 const prefixCountPosition = prefix.indexOf("{count}");
-                let number = 1;
+                const prefixDatePosition = prefix.indexOf("{date}");
+                let newName;
 
-                // use the date format going forward - we limit to 22 custom characters when channels now support 100 characters
-                // so just go with it...
-                number = getDateString(new Date());
+                // TODO: we limit to 22 custom characters when channels now support 100 characters
                 
-                /*
                 // bring this back if we ever increase the max length of the channel name beyond 22 custom characters
-                if (prefix.split("{count}").length - 1 === 1 && prefix.replace("{count}", "").length < 22) {
-                    // use the date format
-                    number = getDateString(new Date());
-                } else {
+                if (prefixCountPosition > -1) {
+                    let number = 1;
                     let allNumbers = [];
                     for (var vc of voiceChannels) {
                         if (prefixCountPosition > -1) {
@@ -327,10 +323,15 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                             number++;
                         }
                     }
-                }
-                */
 
-                const newName = prefix.replace("{count}", number);
+                    newName = prefix.replace("{count}", number);
+                } else if (prefixDatePosition > -1) {
+                    // use the date format
+                    newName = prefix.replace("{date}", getDateString(new Date()));
+                } else {
+                    newName = prefix;
+                }
+
                 await claim.setName(newName);
 
                 if (noClone) {

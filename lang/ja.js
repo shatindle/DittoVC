@@ -197,7 +197,7 @@ __Mod Commands__
     "command_register_param_vc": "ボイスチャンネル",
     "command_register_param_vc_description": "増設できるようにしたいボイスチャンネル",
     "command_register_param_name": "名前",
-    "command_register_param_name_description": "Set a custom name.  Place {count} where you would like the count positioned.",
+    "command_register_param_name_description": "Preset channel name. {count} or {date} are supported (use only one per registration).",
     "command_register_param_info": "info",
     "command_register_param_info_description": "The text channel to give users instructions in",
     "command_register_param_permissions": "権限",

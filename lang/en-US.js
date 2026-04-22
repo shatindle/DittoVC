@@ -197,7 +197,7 @@ __Mod Commands__
     "command_register_param_vc": "vc",
     "command_register_param_vc_description": "The voice channel you wish to make cloneable",
     "command_register_param_name": "name",
-    "command_register_param_name_description": "Set a custom name.  Place {count} where you would like the count positioned.",
+    "command_register_param_name_description": "Preset channel name. {count} or {date} are supported (use only one per registration).",
     "command_register_param_info": "info",
     "command_register_param_info_description": "The text channel to give users instructions in",
     "command_register_param_permissions": "permissions",

@@ -20,8 +20,8 @@ module.exports = {
         .addStringOption(option => 
             option.setName("name")
                 .setNameLocalizations(getLocalizations("command_register_param_name", "name"))
-                .setDescription("Set a custom name.  Place {count} where you would like the count positioned.")
-                .setDescriptionLocalizations(getLocalizations("command_register_param_name_description", "Set a custom name.  Place {count} where you would like the count positioned.")))
+                .setDescription("Preset channel name. {count} or {date} are supported (use only one per registration).")
+                .setDescriptionLocalizations(getLocalizations("command_register_param_name_description", "Preset channel name. {count} or {date} are supported (use only one per registration).")))
         .addChannelOption(option => 
             option.setName("info")
                 .setNameLocalizations(getLocalizations("command_register_param_info", "info"))
