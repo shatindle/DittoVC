@@ -242,12 +242,12 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
 
     // voiceStateUpdate
     "voicestateupdate_user_left_log_name": "Người dùng đã rời khỏi VC",
-    "voicestateupdate_user_left_log_description": "<@%1$s> rời khỏi %2$s\n\n<#%3$s>",
+    "voicestateupdate_user_left_log_description": "<@%1$s> rời khỏi %2$s\n\n<#%3$s>\n%3$s",
     "voicestateupdate_rate_limited": "<@%1$s> vui lòng đợi một vài phút trước khi cố gắng tạo một cuộc trò chuyện thoại mới",
     "voicestateupdate_rate_limited_log_name": "Tham gia cooldown có hiệu lực",
     "voicestateupdate_rate_limited_log_description": "<@%1$s> đã cố gắng tạo một VC, nhưng lại gặp phải giới hạn thời gian",
     "voicestateupdate_user_created_vc_log_name": "Người dùng đã tạo VC",
-    "voicestateupdate_user_created_vc_log_description": "<@%1$s> tạo %2$s\n\n<#%3$s>",
+    "voicestateupdate_user_created_vc_log_description": "<@%1$s> tạo %2$s\n\n<#%3$s>\n%3$s",
 
     // TODO: translate these to vietnamese
     "voicestateupdate_how_to_use_dittovc_vc_created": "<@%1$s> You've created your own voice channel <#%2$s>!",
@@ -258,7 +258,7 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
     "voicestateupdate_how_to_use_dittovc_vc_more_info": "To see the list of all commands the bots supports, run `/info`.",
 
     "voicestateupdate_user_joined_vc_log_name": "Người dùng đã tham gia VC",
-    "voicestateupdate_user_joined_vc_log_description": "<@%1$s> đã tham gia %2$s\n\n<#%3$s>",
+    "voicestateupdate_user_joined_vc_log_description": "<@%1$s> đã tham gia %2$s\n\n<#%3$s>\n%3$s",
 
     "command_menu": "menu",
     "command_menu_description": "Tạo menu điều khiển tĩnh",

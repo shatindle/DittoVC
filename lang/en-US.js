@@ -249,12 +249,12 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
 
     // voiceStateUpdate
     "voicestateupdate_user_left_log_name": "User left VC",
-    "voicestateupdate_user_left_log_description": "<@%1$s> left %2$s\n\n<#%3$s>",
+    "voicestateupdate_user_left_log_description": "<@%1$s> left %2$s\n\n<#%3$s>\n%3$s",
     "voicestateupdate_rate_limited": "<@%1$s> please wait a few minutes before trying to create a new voice chat",
     "voicestateupdate_rate_limited_log_name": "Join cooldown in effect",
     "voicestateupdate_rate_limited_log_description": "<@%1$s> tried to create a VC, but hit cooldown",
     "voicestateupdate_user_created_vc_log_name": "User created VC",
-    "voicestateupdate_user_created_vc_log_description": "<@%1$s> created %2$s\n\n<#%3$s>",
+    "voicestateupdate_user_created_vc_log_description": "<@%1$s> created %2$s\n\n<#%3$s>\n%3$s",
     "voicestateupdate_how_to_use_dittovc_vc_created": "<@%1$s> You've created your own voice channel <#%2$s>!",
     "voicestateupdate_how_to_use_dittovc_vc_is_public": "Your channel is currently public. Anyone can join your channel, but if you want to make it private simply run the `/private` command so that people can only join if you invite them via `/add`. If you change your mind, you can make it public again using `/public`.",
     "voicestateupdate_how_to_use_dittovc_vc_is_private": "Your channel is currently private. To invite people to your channel, use the `/add` command and type the username of the user you want to invite. If you want anyone to be able to join your channel, you can make it public using `/public`. If you change your mind, you can make it private again using `/private`.",
@@ -263,7 +263,7 @@ The "%4$s" role will be the upper limit for permissions when a channel is public
     "voicestateupdate_how_to_use_dittovc_vc_more_info": "To see the list of all commands the bots supports, run `/info`.",
 
     "voicestateupdate_user_joined_vc_log_name": "User joined VC",
-    "voicestateupdate_user_joined_vc_log_description": "<@%1$s> joined %2$s\n\n<#%3$s>",
+    "voicestateupdate_user_joined_vc_log_description": "<@%1$s> joined %2$s\n\n<#%3$s>\n%3$s",
 
     "command_menu": "menu",
     "command_menu_description": "Create a static controls menu",

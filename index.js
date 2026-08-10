@@ -156,7 +156,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 await logActivity(client, 
                     guild.id, 
                     getLang(lang, "voicestateupdate_user_left_log_name", "User left VC"), 
-                    getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s\n\n<#%3$s>", userId, channelName, currentChannel.id));
+                    getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s\n\n<#%3$s>\n%3$s", userId, channelName, currentChannel.id));
             }
         }
 
@@ -348,7 +348,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                 await logActivity(client, 
                     guild.id, 
                     getLang(lang, "voicestateupdate_user_created_vc_log_name", "User created VC"), 
-                    getLang(lang, "voicestateupdate_user_created_vc_log_description", "<@%1$s> created %2$s\n\n<#%3$s>", userId, newName, claim.id));
+                    getLang(lang, "voicestateupdate_user_created_vc_log_description", "<@%1$s> created %2$s\n\n<#%3$s>\n%3$s", userId, newName, claim.id));
 
                 if (instructions) {
                     const instructionsChannelToUse = instructions.preferSelf ? claim.id : instructions.id;
@@ -397,7 +397,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await logActivity(client, 
                         guild.id, 
                         getLang(lang, "voicestateupdate_user_left_log_name", "User abandoned VC"), 
-                        getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s before the channel was fully cloned\n\n<#%3$s>", userId, abandonedChannelName, abandonedChannelId));
+                        getLang(lang, "voicestateupdate_user_left_log_description", "<@%1$s> left %2$s before the channel was fully cloned\n\n<#%3$s>\n%3$s", userId, abandonedChannelName, abandonedChannelId));
                 }
             } else {
                 // only log activity for channels we manage
@@ -405,7 +405,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
                     await logActivity(client, 
                         guild.id, 
                         getLang(lang, "voicestateupdate_user_joined_vc_log_name", "User joined VC"), 
-                        getLang(lang, "voicestateupdate_user_joined_vc_log_description", "<@%1$s> joined %2$s\n\n<#%3$s>", userId, claim.name, claim.id));
+                        getLang(lang, "voicestateupdate_user_joined_vc_log_description", "<@%1$s> joined %2$s\n\n<#%3$s>\n%3$s", userId, claim.name, claim.id));
                 }
             }
         }
